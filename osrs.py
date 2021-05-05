@@ -279,7 +279,7 @@ class Osrs:
 if __name__ == "__main__":
     # NPC color indicator: #FF00FAFF
     osrs = Osrs()
-    osrs.login("testminnie001@gmail.com", "testminnie123")
+    osrs.login("email@mail.com", "password")
     osrs.attack()
     
 
