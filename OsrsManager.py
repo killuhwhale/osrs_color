@@ -1,4 +1,5 @@
 from multiprocessing import Queue, Process
+import pyautogui
 import re
 import signal
 import sys
@@ -9,6 +10,7 @@ from bot_loop import BotLoop
 from osrs import OsrsClient
 from osrs_input import OsrsInput
 from utils import run_cmd, run_script
+
 
 
 class OsrsManager:
@@ -22,9 +24,13 @@ class OsrsManager:
     xoffset = -234
     POS = [(xoffset, -SCREEN_HEIGHT), ((SCREEN_WIDTH//2) + xoffset, -SCREEN_HEIGHT),
            (xoffset, -SCREEN_HEIGHT//2), ((SCREEN_WIDTH//2) + xoffset, -SCREEN_HEIGHT//2)]
+    OS_WIN = 'win'
+    OS_MAC = 'mac'
 
-    def __init__(self, num_clients):
+
+    def __init__(self, num_clients, os_name):
         self._num_clients = num_clients
+        self._os_name = os_name
         self.pids = []
         self.clients = []
         self._main_loop = None
@@ -55,13 +61,22 @@ class OsrsManager:
             pos_y = self.POS[i % 4][1]
             dims = [pos_x, pos_y, self.SCREEN_WIDTH//2, self.SCREEN_HEIGHT//2]
 
+
+
+            if self._os_name == self.OS_WIN:
+                self._resize_window_win11()
+            elif self._os_name == self.OS_MAC:
+                self._resize_window_mac(pid, pos_x, pos_y, f'name{i}test')
+            else:
+                win_id = self._get_win_ID(pid)
+                self._resize_window(win_id, self.SCREEN_HEIGHT//2, self.SCREEN_WIDTH//2)
+                self._move_window(win_id, pos_x, pos_y)
+
+
+
             # If mac
-            self._resize_window_mac(pid, pos_x, pos_y, f'name{i}test')
 
             # If Linux
-            # win_id = self._get_win_ID(pid)
-            # self._resize_window(win_id, self.SCREEN_HEIGHT//2, self.SCREEN_WIDTH//2)
-            # self._move_window(win_id, pos_x, pos_y)
 
             # Create client
             self.clients.append(OsrsClient(pid, dims))
@@ -165,6 +180,38 @@ class OsrsManager:
         cmd = f"xdotool search --pid {pid}"
         return run_cmd(cmd).split("\n")[-2]
 
+
+    def _resize_window_win11(self):
+        windows = pyautogui.getWindowsWithTitle("RuneLite")
+        SCREEN_WIDTH = 1920
+        SCREEN_HEIGHT = 1080
+
+        '''
+        -1920,0            -1,0                
+
+
+
+
+
+        -1920,1079         -1,1079
+        '''
+        x_offset = -1920
+        screen_pos = [
+            (0+x_offset,0),
+            ((SCREEN_WIDTH//2)+x_offset,0),
+            (0+x_offset,SCREEN_HEIGHT//2),
+            ((SCREEN_WIDTH//2)+x_offset,SCREEN_HEIGHT//2), 
+            ]
+        for i in range(len(windows)):
+            window = windows[i]
+            window.resizeTo(SCREEN_WIDTH//2,SCREEN_HEIGHT//2)
+            pos = screen_pos[i]
+            window.moveTo(pos[0],pos[1])    
+            print(f'giving window {i} pos:{pos}')
+
+
+
+
     def start_it(self):
         # main_loop = threading.Thread(target=self.run, args=(99,))
         self._main_loop = Process(target=self._run, args=(self._q,))
@@ -207,5 +254,7 @@ class OsrsManager:
 
 
 if __name__ == "__main__":
-    manager = OsrsManager(2)
+    os_name = OsrsManager.OS_WIN
+    manager = OsrsManager(2, os_name)
     manager.begin()
+
