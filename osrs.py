@@ -21,39 +21,9 @@ class OsrsClient:
         self._pid = pid
         # A list to store dimensions: x, y postition, height and width of window.
         # All window capture cropping functionality is relative to these values.
-        self._dims = dims
-        self._center_x = (self._dims[2] // 2) + self._dims[0]
-        self._center_y = (self._dims[3] // 2) + self._dims[1]
-
-    def _crop_inventory(self):
-        """Crops the screenshot of the window to the Inventory.
-        """
-        dims = self._dims
-        # 200x270
-        x = dims[0]+535
-        y = dims[1]+250
-        self._screen_Image(x, y, x+200, y+270, 'inventshot.png')
-
-    def _crop_window(self):
-        """Crops the screenshot of the window to the Runelite Window.
-        """
-        dims = self._dims
-        x = dims[0] + dims[2]-10
-        y = dims[1] + dims[3]-50
-        self._screen_Image(dims[0]-10, dims[1]-50, x, y, "whole.png")
-
-    def _screen_Image(self, left=0, top=0, right=0, bottom=0, name='screenshot.png'):
-        myScreenshot = pyautogui.screenshot()
-        # open_cv_image = np.array(img)
-        # # Convert RGB to BGR
-        # open_cv_image = open_cv_image[:, :, ::-1].copy()
-        myScreenshot.save(r'screenshot.png')
-        if left != 0 or top != 0 or right != 0 or bottom != 0:
-            # uses PIL library to open image in memory
-            im = Image.open(r'screenshot.png')
-            im = im.crop((left, top, right, bottom))  # defines crop points
-            im.save(name)  # saves new cropped image
-            print('screeenshot saved')
+        self.dims = dims
+        self._center_x = (self.dims[2] // 2) + self.dims[0]
+        self._center_y = (self.dims[3] // 2) + self.dims[1]
 
     def attack(self):
         """ The main attack cycle.
@@ -106,7 +76,7 @@ class OsrsClient:
         # Gets screenshot of entire screen
         image = np.array(pyautogui.screenshot())
         # Cropped to Runelite Window.
-        dims = self._dims
+        dims = self.dims
         w = dims[2]-10
         h = dims[3]-50
         x = dims[0]-10

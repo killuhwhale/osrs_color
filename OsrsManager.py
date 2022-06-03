@@ -11,6 +11,7 @@ from osrs import OsrsClient
 from osrs_input import OsrsInput
 from utils import run_cmd, run_script
 
+DEGUB = True
 
 
 class OsrsManager:
@@ -21,12 +22,14 @@ class OsrsManager:
     '''
     SCREEN_HEIGHT = 1080
     SCREEN_WIDTH = 1920
-    xoffset = -234
-    POS = [(xoffset, -SCREEN_HEIGHT), ((SCREEN_WIDTH//2) + xoffset, -SCREEN_HEIGHT),
-           (xoffset, -SCREEN_HEIGHT//2), ((SCREEN_WIDTH//2) + xoffset, -SCREEN_HEIGHT//2)]
+
+    POS = [(0, 0),
+           (SCREEN_WIDTH//2, 0),
+           (0, SCREEN_HEIGHT//2),
+           (SCREEN_WIDTH//2, (SCREEN_HEIGHT//2))
+           ]
     OS_WIN = 'win'
     OS_MAC = 'mac'
-
 
     def __init__(self, num_clients, os_name):
         self._num_clients = num_clients
@@ -35,33 +38,43 @@ class OsrsManager:
         self.clients = []
         self._main_loop = None
         self._input_thread = None
+
         # Process queue
         self._q = Queue()
 
-        self._botLoop = BotLoop()
+        self._botLoop = BotLoop(DEGUB)
         self._input = OsrsInput()
 
         self.create_clients()
         print(f'Started {num_clients} with pids: {self.pids}')
+        self._sigTerm()  # handling for terminating the process.
 
     def create_clients(self):
         # Launch Processes
-        for i in range(self._num_clients):
-            cmd = f'java -jar ./RuneLite.jar'
-            run_cmd(cmd)
+        if not DEGUB:
+            for i in range(self._num_clients):
+                cmd = f'java -jar ./RuneLite.jar'
+                run_cmd(cmd)
 
         print("Waiting for clients to load")
-        time.sleep(3)
+        time.sleep(1)
+
+        # Find Pids
+        self.pids = self._find_pids()
 
         # Assign a PID and Dimensionss to each Client
-        self.pids = self._find_pids()
+        self._assign_pid_and_dims_to_client()
+
+        # Pass clients to BotLoop
+        self._botLoop.set_clients(self.clients)
+
+    def _assign_pid_and_dims_to_client(self):
         for i in range(len(self.pids)):
             pid = self.pids[i]
             pos_x = self.POS[i % 4][0]
             pos_y = self.POS[i % 4][1]
-            dims = [pos_x, pos_y, self.SCREEN_WIDTH//2, self.SCREEN_HEIGHT//2]
-
-
+            dims = [pos_x, pos_y, self.SCREEN_WIDTH//2,
+                    self.SCREEN_HEIGHT//2]
 
             if self._os_name == self.OS_WIN:
                 self._resize_window_win11()
@@ -69,10 +82,9 @@ class OsrsManager:
                 self._resize_window_mac(pid, pos_x, pos_y, f'name{i}test')
             else:
                 win_id = self._get_win_ID(pid)
-                self._resize_window(win_id, self.SCREEN_HEIGHT//2, self.SCREEN_WIDTH//2)
+                self._resize_window(
+                    win_id, self.SCREEN_HEIGHT//2, self.SCREEN_WIDTH//2)
                 self._move_window(win_id, pos_x, pos_y)
-
-
 
             # If mac
 
@@ -80,8 +92,6 @@ class OsrsManager:
 
             # Create client
             self.clients.append(OsrsClient(pid, dims))
-
-        self._botLoop.set_clients(self.clients)
 
     def _find_pids(self):
         """ Finds PID of runelite.
@@ -94,7 +104,7 @@ class OsrsManager:
         # \w*\+*\s*
         # \d*\:\d*\.\d*\s*
         # \/opt\/homebrew\/Cellar\/openjdk.*$"""
-        pid_pattern = r"""^\s*(?P<pid>\d*)\s*\w*\s*\w*\+*\s*\d*\:\d*\.\d*\s*\/opt\/homebrew\/Cellar\/openjdk.*$"""
+        pid_pattern = r"""^\s*(?P<pid>\d*)\s*\w*\?*\s*\w*\+*\s*\d*\:\d*\.\d*\s*\/opt\/homebrew\/Cellar\/openjdk.*RuneLite$"""
         pattern = re.compile(pid_pattern, re.MULTILINE | re.VERBOSE)
         # match = re.search(pattern, top)
         matches = re.finditer(pattern, top)
@@ -180,7 +190,6 @@ class OsrsManager:
         cmd = f"xdotool search --pid {pid}"
         return run_cmd(cmd).split("\n")[-2]
 
-
     def _resize_window_win11(self):
         windows = pyautogui.getWindowsWithTitle("RuneLite")
         SCREEN_WIDTH = 1920
@@ -197,20 +206,17 @@ class OsrsManager:
         '''
         x_offset = -1920
         screen_pos = [
-            (0+x_offset,0),
-            ((SCREEN_WIDTH//2)+x_offset,0),
-            (0+x_offset,SCREEN_HEIGHT//2),
-            ((SCREEN_WIDTH//2)+x_offset,SCREEN_HEIGHT//2), 
-            ]
+            (0+x_offset, 0),
+            ((SCREEN_WIDTH//2)+x_offset, 0),
+            (0+x_offset, SCREEN_HEIGHT//2),
+            ((SCREEN_WIDTH//2)+x_offset, SCREEN_HEIGHT//2),
+        ]
         for i in range(len(windows)):
             window = windows[i]
-            window.resizeTo(SCREEN_WIDTH//2,SCREEN_HEIGHT//2)
+            window.resizeTo(SCREEN_WIDTH//2, SCREEN_HEIGHT//2)
             pos = screen_pos[i]
-            window.moveTo(pos[0],pos[1])    
+            window.moveTo(pos[0], pos[1])
             print(f'giving window {i} pos:{pos}')
-
-
-
 
     def start_it(self):
         # main_loop = threading.Thread(target=self.run, args=(99,))
@@ -231,6 +237,7 @@ class OsrsManager:
 
         self._input_thread = threading.Thread(
             target=self._input.start_input, args=(self._q, ))
+        self._input_thread.daemon = True
         self._input_thread.start()
         # Start thread
         while True:
@@ -246,15 +253,14 @@ class OsrsManager:
         signal.signal(signal.SIGTERM, self._handle_exit)
         signal.signal(signal.SIGINT, self._handle_exit)
 
-    def _handle_exit(self):
-        print("Ctl-C pressed! Closing...")
+    def _handle_exit(self, _signum, _frame):
+        print(f"Ctl-C pressed! Closing... {_signum} - {_frame}")
         self._main_loop.terminate()
-        self._input_thread.join()
+
         sys.exit()
 
 
 if __name__ == "__main__":
-    os_name = OsrsManager.OS_WIN
-    manager = OsrsManager(2, os_name)
+    os_name = OsrsManager.OS_MAC
+    manager = OsrsManager(1, os_name)
     manager.begin()
-
