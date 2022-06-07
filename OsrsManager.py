@@ -10,10 +10,9 @@ from bot_loop import BotLoop
 from osrs import OsrsClient
 from osrs_input import OsrsInput
 from utils import run_cmd, run_script
-from config import SCREEN_TOP_MARGIN
+from config import PLATFORM, SCREEN_TOP_MARGIN, OS_LINUX, OS_WIN, OS_MAC
 
 DEGUB = True
-PLATFORM = sys.platform
 
 
 class OsrsManager:
@@ -22,6 +21,7 @@ class OsrsManager:
         For each PID, create an instance of OSRS() 
 
     '''
+
     SCREEN_WIDTH = 1920
     SCREEN_HEIGHT = 1080 - SCREEN_TOP_MARGIN
 
@@ -32,9 +32,6 @@ class OsrsManager:
            (0, (SCREEN_HEIGHT//2) + SCREEN_TOP_MARGIN),
            (SCREEN_WIDTH//3, (SCREEN_HEIGHT//2) + SCREEN_TOP_MARGIN)
            ]
-    OS_WIN = 'windows'
-    OS_MAC = 'darwin'
-    OS_LINUX = "linux"
 
     def __init__(self, num_clients):
         self._num_clients = num_clients
@@ -82,9 +79,9 @@ class OsrsManager:
             dims = [pos_x, pos_y, self.SCREEN_WIDTH//3,
                     self.SCREEN_HEIGHT//2]
 
-            if self._os_name == self.OS_WIN:
+            if self._os_name == OS_WIN:
                 self._resize_window_win11()
-            elif self._os_name == self.OS_MAC:
+            elif self._os_name == OS_MAC:
                 self._resize_window_mac(
                     pid, dims[0], dims[1], dims[2], dims[3])
             else:

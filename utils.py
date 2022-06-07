@@ -6,7 +6,7 @@ from PIL import Image
 # import numpy as np
 from enum import Enum
 from osrs import OsrsClient
-from config import SCREEN_TOP_MARGIN
+from config import PLATFORM, SCREEN_TOP_MARGIN, OS_LINUX, OS_WIN, OS_MAC
 
 
 class Durations(Enum):
