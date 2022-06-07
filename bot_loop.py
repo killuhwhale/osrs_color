@@ -1,7 +1,7 @@
 from time import sleep
 from all_recipies import get_all_recipies
 from all_actions import get_all_actions
-from utils import search_inventory
+from utils import Spaces, search_space, move_map_deg, reset_map, move_map_pitch
 ACCOUNTS = [
     ['thisiscrazy@really.net', 'qpwoei1337'],
     ['thisiscrazy1@really.net', 'qpwoei1337'],
@@ -72,10 +72,32 @@ class BotLoop:
 
             for i, client in enumerate(self._clients):
                 # ALL_RECIPIES[action]['fns'][step](client)
+                # move_map_deg(client, 90)
+                # sleep(.75)
+                # reset_map(client)
+                # sleep(.75)
+
                 if not img_taken:
-                    search_inventory(client, "jug.png")
+
+                    # move_map_pitch(client, 100)
+                    retries = 5
+                    spaces = Spaces.INV
+                    item = "test/rune_ess.png"
+                    # Searches a space on screen for a target and randomly clicks within its bounds if found.
+                    result = search_space(
+                        client, spaces, item, grayscale=False, confidence=0.74)
+                    print("First result: ", result)
+
+                    # TODO() Retry for image should be moved to search_space()
+                    # while result is None and retries > 0:
+                    #     print(
+                    #         f"Image not found, retrying: {retries} more times")
+                    #     result = search_space(
+                    #         client, spaces, item)
+                    #     retries -= 1
+                    #     sleep(.5)
                     img_taken = True
-                sleep(1)
+                sleep(2.5)
 
             # Calls sleep lambda sleep function
             '''

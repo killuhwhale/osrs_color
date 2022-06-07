@@ -10,6 +10,7 @@ from bot_loop import BotLoop
 from osrs import OsrsClient
 from osrs_input import OsrsInput
 from utils import run_cmd, run_script
+from config import SCREEN_TOP_MARGIN
 
 DEGUB = True
 
@@ -20,13 +21,14 @@ class OsrsManager:
         For each PID, create an instance of OSRS() 
 
     '''
-    SCREEN_HEIGHT = 1080
+    SCREEN_TOP_MARGIN = 25
     SCREEN_WIDTH = 1920
+    SCREEN_HEIGHT = 1080 - SCREEN_TOP_MARGIN
 
-    POS = [(0, 0),
-           (SCREEN_WIDTH//2, 0),
-           (0, SCREEN_HEIGHT//2),
-           (SCREEN_WIDTH//2, (SCREEN_HEIGHT//2))
+    POS = [(0, 0 + SCREEN_TOP_MARGIN),
+           (SCREEN_WIDTH//2, 0 + SCREEN_TOP_MARGIN),
+           (0, (SCREEN_HEIGHT//2) + SCREEN_TOP_MARGIN),
+           (SCREEN_WIDTH//2, (SCREEN_HEIGHT//2) + SCREEN_TOP_MARGIN)
            ]
     OS_WIN = 'win'
     OS_MAC = 'mac'
