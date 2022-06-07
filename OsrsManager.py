@@ -108,7 +108,7 @@ class OsrsManager:
         # \w*\+*\s*
         # \d*\:\d*\.\d*\s*
         # \/opt\/homebrew\/Cellar\/openjdk.*$"""
-        pid_pattern = r"""^\s*(?P<pid>\d*)\s*\w*\?*\s*\w*\+*\s*\d*\:\d*\.\d*\s*\/opt\/homebrew\/Cellar\/openjdk.*RuneLite$"""
+        pid_pattern = r"""^\s*(?P<pid>\d*)\s*\w*\?*\s*\w*\+*\s*\d*\:\d*\.\d*\s*.*RuneLite$"""
         pattern = re.compile(pid_pattern, re.MULTILINE | re.VERBOSE)
         # match = re.search(pattern, top)
         matches = re.finditer(pattern, top)
