@@ -87,7 +87,7 @@ def crop_screen_pos(dims, x_offset, y_offset, x1_offset, y1_offset):
     w, h = x1_offset - x_offset, y1_offset - y_offset
     x_offset, y_offset = x_offset + x,  y_offset + \
         y  # Update/adj with client top left corner
-
+    print(f"Platform adjustment: {PA}")
     return [screen_image(x_offset, y_offset + PA, x_offset + w,
                          y_offset + PA + h, ''), x_offset, y_offset]
 
