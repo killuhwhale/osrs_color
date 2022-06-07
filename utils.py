@@ -3,7 +3,7 @@ from subprocess import Popen, PIPE, run
 from tokenize import String
 import pyautogui
 from PIL import Image
-import numpy as np
+# import numpy as np
 from enum import Enum
 from osrs import OsrsClient
 from config import SCREEN_TOP_MARGIN
