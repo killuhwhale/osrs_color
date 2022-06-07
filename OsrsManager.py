@@ -13,6 +13,7 @@ from utils import run_cmd, run_script
 from config import SCREEN_TOP_MARGIN
 
 DEGUB = True
+PLATFORM = sys.platform
 
 
 class OsrsManager:
@@ -31,12 +32,13 @@ class OsrsManager:
            (0, (SCREEN_HEIGHT//2) + SCREEN_TOP_MARGIN),
            (SCREEN_WIDTH//3, (SCREEN_HEIGHT//2) + SCREEN_TOP_MARGIN)
            ]
-    OS_WIN = 'win'
-    OS_MAC = 'mac'
+    OS_WIN = 'windows'
+    OS_MAC = 'darwin'
+    OS_LINUX = "linux"
 
-    def __init__(self, num_clients, os_name):
+    def __init__(self, num_clients):
         self._num_clients = num_clients
-        self._os_name = os_name
+        self._os_name = PLATFORM
         self.pids = []
         self.clients = []
         self._main_loop = None
@@ -87,7 +89,7 @@ class OsrsManager:
             else:
                 win_id = self._get_win_ID(pid)
                 self._resize_window(
-                    win_id, self.SCREEN_HEIGHT//2, self.SCREEN_WIDTH//2)
+                    win_id, self.SCREEN_HEIGHT//3, self.SCREEN_WIDTH//2)
                 self._move_window(win_id, pos_x, pos_y)
 
             # If mac
@@ -265,6 +267,5 @@ class OsrsManager:
 
 
 if __name__ == "__main__":
-    os_name = OsrsManager.OS_MAC
-    manager = OsrsManager(1, os_name)
+    manager = OsrsManager(1)
     manager.begin()
