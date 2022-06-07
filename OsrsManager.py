@@ -88,10 +88,11 @@ class OsrsManager:
                 self._resize_window_mac(
                     pid, dims[0], dims[1], dims[2], dims[3])
             else:
-                win_id = self._get_win_ID(pid)
-                self._resize_window(
-                    win_id, self.SCREEN_HEIGHT//3, self.SCREEN_WIDTH//2)
-                self._move_window(win_id, pos_x, pos_y)
+                win_ids = self._get_win_IDs(pid)
+                for wid in win_ids:
+                    self._resize_window(
+                        wid, self.SCREEN_HEIGHT//3, self.SCREEN_WIDTH//2)
+                    self._move_window(wid, pos_x, pos_y)
 
             # If mac
 
@@ -142,7 +143,7 @@ class OsrsManager:
 
     # Linux
     def _move_window(self, win_id, pos_x, pos_y):
-        cmd = f'''xdotool windowmove -- {pos_x} {pos_y}'''
+        cmd = f'''xdotool windowmove -- {win_id} {pos_x} {pos_y}'''
         run_cmd(cmd)
 
     # Linux
@@ -186,7 +187,7 @@ class OsrsManager:
         return values
     # Linux
 
-    def _get_win_ID(self, pid):
+    def _get_win_IDs(self, pid):
         """ Gets window ID of Runelite.
 
         Returns:
@@ -195,7 +196,7 @@ class OsrsManager:
         """
         assert pid, f"Window ID invalid: {pid}"
         cmd = f"xdotool search --pid {pid}"
-        return run_cmd(cmd).split("\n")[-2]
+        return run_cmd(cmd).split("\n")
 
     def _resize_window_win11(self):
         windows = pyautogui.getWindowsWithTitle("RuneLite")
