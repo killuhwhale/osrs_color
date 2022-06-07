@@ -51,7 +51,8 @@ class OsrsManager:
         self._input = OsrsInput()
 
         self.create_clients()
-        print(f'Started {num_clients} with pids: {self.pids}')
+        print(
+            f'''Started {num_clients} on '{PLATFORM}' with pids: {self.pids}''')
         self._sigTerm()  # handling for terminating the process.
 
     def create_clients(self):
