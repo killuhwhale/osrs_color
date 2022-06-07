@@ -69,6 +69,7 @@ def screen_image(left=0, top=0, right=0, bottom=0, name='screenshot.png') -> Ima
     '''
     myScreenshot: Image = pyautogui.screenshot(
         'test.png', region=(left, top, (right - left), (bottom - top)))
+    print(f"SS@: {(left, top), {((right - left), (bottom - top))}}")
     return myScreenshot
 
 
