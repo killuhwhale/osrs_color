@@ -94,7 +94,7 @@ class OsrsManager:
                     if wid:
                         print("Window id: ", wid)
                         self._resize_window(
-                            wid, self.SCREEN_HEIGHT//3, self.SCREEN_WIDTH//2)
+                            wid, self.SCREEN_WIDTH//3, self.SCREEN_HEIGHT//2)
                         self._move_window(wid, pos_x, pos_y)
 
             # If mac
@@ -150,7 +150,7 @@ class OsrsManager:
         run_cmd(cmd)
 
     # Linux
-    def _resize_window(self, win_id, h, w):
+    def _resize_window(self, win_id, w, h):
         assert win_id, f"Window ID invalid: {win_id}"
         cmd = f"xdotool windowsize {win_id} {w} {h}"
         run_cmd(cmd)
