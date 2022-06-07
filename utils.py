@@ -68,7 +68,7 @@ def screen_image(left=0, top=0, right=0, bottom=0, name='screenshot.png') -> Ima
         Given the screen postions of ea corner, returns an Image of the screen region.
     '''
     myScreenshot: Image = pyautogui.screenshot(
-        'test.png', region=(left*2, top*2, (right - left)*2, (bottom - top)*2))
+        'test.png', region=(left, top, (right - left), (bottom - top)))
     return myScreenshot
 
 
@@ -116,7 +116,8 @@ def crop_inventory(client: OsrsClient):
     |                                                                                                           |
     ------------------------------------------------------------------------------------------------------------
     """
-    return crop_screen_pos(client.dims, 640, 260, 810, 520)
+    x = 78
+    return crop_screen_pos(client.dims, 640 - 80, 260, 810 - 80, 520)
 
 
 def crop_inv_row_1(client: OsrsClient):
@@ -124,7 +125,7 @@ def crop_inv_row_1(client: OsrsClient):
     641, 266
     804, 298
     '''
-    return crop_screen_pos(client.dims, 640, 260, 804, 298)
+    return crop_screen_pos(client.dims, 640 - 80, 250, 804 - 80, 306)
 
 
 def crop_inv_row_2(client: OsrsClient):
@@ -286,6 +287,9 @@ def crop_west_b(client: OsrsClient):
 
 
 def locate(needle: Image, hay: Image, grayscale=True, confidence=0.69):
+
+    print(f"Needle size: {needle}")
+    print(f"Hay size: {hay}")
     return pyautogui.locate(needle, hay, grayscale=grayscale,  confidence=confidence)
 
 

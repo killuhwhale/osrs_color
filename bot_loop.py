@@ -81,8 +81,8 @@ class BotLoop:
 
                     # move_map_pitch(client, 100)
                     retries = 5
-                    spaces = Spaces.INV
-                    item = "test/rune_ess.png"
+                    spaces = Spaces.ROW_1
+                    item = "test/knife.png"
                     # Searches a space on screen for a target and randomly clicks within its bounds if found.
                     result = search_space(
                         client, spaces, item, grayscale=False, confidence=0.74)
