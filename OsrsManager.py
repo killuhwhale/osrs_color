@@ -89,11 +89,13 @@ class OsrsManager:
                     pid, dims[0], dims[1], dims[2], dims[3])
             else:
                 win_ids = self._get_win_IDs(pid)
+                print('IDS:', win_ids)
                 for wid in win_ids:
-                    print("Window id: ", wid)
-                    self._resize_window(
-                        wid, self.SCREEN_HEIGHT//3, self.SCREEN_WIDTH//2)
-                    self._move_window(wid, pos_x, pos_y)
+                    if wid:
+                        print("Window id: ", wid)
+                        self._resize_window(
+                            wid, self.SCREEN_HEIGHT//3, self.SCREEN_WIDTH//2)
+                        self._move_window(wid, pos_x, pos_y)
 
             # If mac
 
