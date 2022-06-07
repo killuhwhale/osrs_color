@@ -141,17 +141,17 @@ class OsrsManager:
         run_script('osascript', inner_cmd.encode('utf-8'))
 
     # Linux
-
     def _move_window(self, win_id, pos_x, pos_y):
-        pass
-    # Linux
+        cmd = f'''xdotool windowmove -- {pos_x} {pos_y}'''
+        run_cmd(cmd)
 
+    # Linux
     def _resize_window(self, win_id, h, w):
         assert win_id, f"Window ID invalid: {win_id}"
         cmd = f"xdotool windowsize {win_id} {w} {h}"
         run_cmd(cmd)
-    # Linux
 
+    # Linux
     def _get_win_dimensions(self, win_id):
         """ Returns the postition of the top left corner of the window.
         Returns the top left corner and the width and height of the window.
