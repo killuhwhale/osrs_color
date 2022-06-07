@@ -21,14 +21,15 @@ class OsrsManager:
         For each PID, create an instance of OSRS() 
 
     '''
-    SCREEN_TOP_MARGIN = 25
     SCREEN_WIDTH = 1920
     SCREEN_HEIGHT = 1080 - SCREEN_TOP_MARGIN
 
     POS = [(0, 0 + SCREEN_TOP_MARGIN),
-           (SCREEN_WIDTH//2, 0 + SCREEN_TOP_MARGIN),
+           (SCREEN_WIDTH//3, 0 + SCREEN_TOP_MARGIN),
+           (2*(SCREEN_WIDTH//3), 0 + SCREEN_TOP_MARGIN),
+
            (0, (SCREEN_HEIGHT//2) + SCREEN_TOP_MARGIN),
-           (SCREEN_WIDTH//2, (SCREEN_HEIGHT//2) + SCREEN_TOP_MARGIN)
+           (SCREEN_WIDTH//3, (SCREEN_HEIGHT//2) + SCREEN_TOP_MARGIN)
            ]
     OS_WIN = 'win'
     OS_MAC = 'mac'
@@ -75,13 +76,14 @@ class OsrsManager:
             pid = self.pids[i]
             pos_x = self.POS[i % 4][0]
             pos_y = self.POS[i % 4][1]
-            dims = [pos_x, pos_y, self.SCREEN_WIDTH//2,
+            dims = [pos_x, pos_y, self.SCREEN_WIDTH//3,
                     self.SCREEN_HEIGHT//2]
 
             if self._os_name == self.OS_WIN:
                 self._resize_window_win11()
             elif self._os_name == self.OS_MAC:
-                self._resize_window_mac(pid, pos_x, pos_y, f'name{i}test')
+                self._resize_window_mac(
+                    pid, dims[0], dims[1], dims[2], dims[3])
             else:
                 win_id = self._get_win_ID(pid)
                 self._resize_window(
@@ -121,14 +123,14 @@ class OsrsManager:
 
         return pids
 
-    def _resize_window_mac(self, pid, pos_x, pos_y, name):
+    def _resize_window_mac(self, pid, pos_x, pos_y, w, h):
         '''
             Issues command
         '''
         print("Inner command: ", pid)
         inner_cmd = f"""tell application "System Events"
             tell processes whose unix id is {pid}
-                set size of front window to {{{self.SCREEN_WIDTH//2}, {self.SCREEN_HEIGHT//2}}}
+                set size of front window to {{{w}, {h}}}
                 set position of front window to {{{pos_x}, {pos_y}}}
             end tell
         end tell"""
