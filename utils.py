@@ -6,7 +6,7 @@ from PIL import Image
 # import numpy as np
 from enum import Enum
 from osrs import OsrsClient
-from config import PLATFORM, SCREEN_TOP_MARGIN, OS_LINUX, OS_WIN, OS_MAC
+from config import PLATFORM, SCREEN_TOP_MARGIN, OS_LINUX, OS_WIN, OS_MAC, PA
 
 
 class Durations(Enum):
@@ -88,8 +88,8 @@ def crop_screen_pos(dims, x_offset, y_offset, x1_offset, y1_offset):
     x_offset, y_offset = x_offset + x,  y_offset + \
         y  # Update/adj with client top left corner
 
-    return [screen_image(x_offset, y_offset, x_offset + w,
-                         y_offset + h, ''), x_offset, y_offset]
+    return [screen_image(x_offset, y_offset + PA, x_offset + w,
+                         y_offset + PA + h, ''), x_offset, y_offset]
 
 
 def crop_inventory(client: OsrsClient):

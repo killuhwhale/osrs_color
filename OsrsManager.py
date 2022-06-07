@@ -10,7 +10,7 @@ from bot_loop import BotLoop
 from osrs import OsrsClient
 from osrs_input import OsrsInput
 from utils import run_cmd, run_script
-from config import PLATFORM, SCREEN_TOP_MARGIN, OS_LINUX, OS_WIN, OS_MAC
+from config import PLATFORM, SCREEN_TOP_MARGIN, WINDOW_TOP_MARGIN, OS_LINUX, OS_WIN, OS_MAC
 
 DEGUB = True
 
