@@ -6,7 +6,7 @@ from PIL import Image
 # import numpy as np
 from enum import Enum
 from osrs import OsrsClient
-from config import PLATFORM, SCREEN_TOP_MARGIN, OS_LINUX, OS_WIN, OS_MAC, PA
+from config import PLATFORM, SCREEN_TOP_MARGIN, OS_LINUX, OS_WIN, OS_MAC, SCREEN_TOP_MARGIN, WINDOW_TOP_MARGIN
 
 
 class Durations(Enum):
@@ -82,14 +82,15 @@ def crop_screen_pos(dims, x_offset, y_offset, x1_offset, y1_offset):
     '''
 
     '''
-    x, y = dims[0], dims[1] - SCREEN_TOP_MARGIN  # minus margin since we originally mapped coordinates assuming 0,0 but it was actually off by the top margin of my mac system bar
+    x, y = dims[0], dims[1]   # minus margin since we originally mapped coordinates assuming 0,0 but it was actually off by the top margin of my mac system bar
     # Top left
     w, h = x1_offset - x_offset, y1_offset - y_offset
     x_offset, y_offset = x_offset + x,  y_offset + \
         y  # Update/adj with client top left corner
+    PA = SCREEN_TOP_MARGIN + WINDOW_TOP_MARGIN
     print(f"Platform adjustment: {PA}")
-    return [screen_image(x_offset, y_offset - PA, x_offset + w,
-                         y_offset - PA + h, ''), x_offset, y_offset]
+    return [screen_image(x_offset, y_offset + (PA//2), x_offset + w,
+                         y_offset + (PA//2) + h, ''), x_offset, y_offset]
 
 
 def crop_inventory(client: OsrsClient):
@@ -118,7 +119,7 @@ def crop_inventory(client: OsrsClient):
     ------------------------------------------------------------------------------------------------------------
     """
     x = 78
-    return crop_screen_pos(client.dims, 640 - 80, 260, 810 - 80, 520)
+    return crop_screen_pos(client.dims, 560, 210, 725, 462)
 
 
 def crop_inv_row_1(client: OsrsClient):

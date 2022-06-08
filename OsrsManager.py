@@ -13,6 +13,8 @@ from utils import run_cmd, run_script
 from config import PLATFORM, SCREEN_TOP_MARGIN, WINDOW_TOP_MARGIN, OS_LINUX, OS_WIN, OS_MAC
 
 DEGUB = True
+SOCKS_HOST = ''
+SOCKS_PORT = 1080
 
 
 class OsrsManager:
@@ -57,6 +59,16 @@ class OsrsManager:
         if not DEGUB:
             for i in range(self._num_clients):
                 cmd = f'java -jar ./RuneLite.jar'
+                # cmd = f'java -DsocksProxyHost={SOCKS_HOST} -DsocksProxyPort={SOCKS_PORT} -jar runelite.jar'
+                # amsterdam.nl.socks.nordhold.net
+                # atlanta.us.socks.nordhold.net
+                # dallas.us.socks.nordhold.net
+                # los-angeles.us.socks.nordhold.net
+                # nl.socks.nordhold.net
+                # se.socks.nordhold.net
+                # stockholm.se.socks.nordhold.net
+                # us.socks.nordhold.net
+                # java -DsocksProxyHost={host} -DsocksProxyPort={port} -jar runelite.jar
                 run_cmd(cmd)
 
         print("Waiting for clients to load")

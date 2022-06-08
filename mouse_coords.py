@@ -1,4 +1,5 @@
 from pynput import mouse
+from config import SCREEN_TOP_MARGIN, WINDOW_TOP_MARGIN
 
 
 class MousePOS:
@@ -7,7 +8,8 @@ class MousePOS:
 
     def on_click(self, x, y, button, pressed):
         if pressed and str(button) == 'Button.left':
-            print(f'{int(x)}, {int(y)}')
+            print(
+                f'abs coords {int(x)}, {int(y - SCREEN_TOP_MARGIN - WINDOW_TOP_MARGIN)}')
             # print('{0} at {1}'.format(
             #     'Pressed' if pressed else 'Released', (x, y)))
         if not pressed:
