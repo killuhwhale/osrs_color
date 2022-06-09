@@ -23,17 +23,29 @@ class OsrsManager:
         For each PID, create an instance of OSRS() 
 
     '''
+    CLIENT_WIDTH = 765
+    CLIENT_HEIGHT = 535
 
     SCREEN_WIDTH = 1920
     SCREEN_HEIGHT = 1080 - SCREEN_TOP_MARGIN
 
-    POS = [(0, 0 + SCREEN_TOP_MARGIN),
-           (SCREEN_WIDTH//3, 0 + SCREEN_TOP_MARGIN),
-           (2*(SCREEN_WIDTH//3), 0 + SCREEN_TOP_MARGIN),
+    # POS = [(0, 0 + SCREEN_TOP_MARGIN),
+    #        (SCREEN_WIDTH//3, 0 + SCREEN_TOP_MARGIN),
+    #        (2*(SCREEN_WIDTH//3), 0 + SCREEN_TOP_MARGIN),
 
-           (0, (SCREEN_HEIGHT//2) + SCREEN_TOP_MARGIN),
-           (SCREEN_WIDTH//3, (SCREEN_HEIGHT//2) + SCREEN_TOP_MARGIN)
-           ]
+    #        (0, (SCREEN_HEIGHT//2) + SCREEN_TOP_MARGIN),
+    #        (SCREEN_WIDTH//3, (SCREEN_HEIGHT//2) + SCREEN_TOP_MARGIN)
+    #        ]
+
+    POS = [
+        (0, 0 + SCREEN_TOP_MARGIN),
+        (CLIENT_WIDTH, 0 + SCREEN_TOP_MARGIN),
+        (2*CLIENT_WIDTH, 0 + SCREEN_TOP_MARGIN),
+
+        (0, CLIENT_HEIGHT + SCREEN_TOP_MARGIN),
+        (CLIENT_WIDTH, CLIENT_HEIGHT + SCREEN_TOP_MARGIN),
+        (2*CLIENT_WIDTH, CLIENT_HEIGHT + SCREEN_TOP_MARGIN),
+    ]
 
     def __init__(self, num_clients):
         self._num_clients = num_clients
@@ -86,10 +98,10 @@ class OsrsManager:
     def _assign_pid_and_dims_to_client(self):
         for i in range(len(self.pids)):
             pid = self.pids[i]
-            pos_x = self.POS[i % 4][0]
-            pos_y = self.POS[i % 4][1]
-            dims = [pos_x, pos_y, self.SCREEN_WIDTH//3,
-                    self.SCREEN_HEIGHT//2]
+            pos_x = self.POS[i % self._num_clients][0]
+            pos_y = self.POS[i % self._num_clients][1]
+            dims = [pos_x, pos_y, self.CLIENT_WIDTH,
+                    self.CLIENT_HEIGHT]
 
             if self._os_name == OS_WIN:
                 self._resize_window_win11()
@@ -103,7 +115,7 @@ class OsrsManager:
                     if wid:
                         print("Window id: ", wid)
                         self._resize_window(
-                            wid, self.SCREEN_WIDTH//3, self.SCREEN_HEIGHT//2)
+                            wid, self.CLIENT_WIDTH, self.CLIENT_HEIGHT)
                         self._move_window(wid, pos_x, pos_y)
 
             # If mac
@@ -233,7 +245,7 @@ class OsrsManager:
         ]
         for i in range(len(windows)):
             window = windows[i]
-            window.resizeTo(SCREEN_WIDTH//2, SCREEN_HEIGHT//2)
+            window.resizeTo(self.CLIENT_WIDTH, self.CLIENT_HEIGHT)
             pos = screen_pos[i]
             window.moveTo(pos[0], pos[1])
             print(f'giving window {i} pos:{pos}')

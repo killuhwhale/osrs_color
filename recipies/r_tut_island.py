@@ -28,7 +28,7 @@ def click_gilinor_guide(client):
     # SS to see if we are actually talking to NPC
 
 
-RECIPIES = {
+RECIPIE = {
     'tut_island': {
         'fns': [
 

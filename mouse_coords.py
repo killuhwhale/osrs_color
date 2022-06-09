@@ -2,6 +2,12 @@ from pynput import mouse
 from config import SCREEN_TOP_MARGIN, WINDOW_TOP_MARGIN
 
 
+''' A program to find relative screen coordinates.
+
+    When a click is received, the y coordinate is adjusted by the size of the screen and client margin.
+'''
+
+
 class MousePOS:
     def __init__(self):
         self.listener = None
@@ -10,8 +16,7 @@ class MousePOS:
         if pressed and str(button) == 'Button.left':
             print(
                 f'abs coords {int(x)}, {int(y - SCREEN_TOP_MARGIN - WINDOW_TOP_MARGIN)}')
-            # print('{0} at {1}'.format(
-            #     'Pressed' if pressed else 'Released', (x, y)))
+
         if not pressed:
             # Stop listener
             # return False

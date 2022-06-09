@@ -2,11 +2,9 @@
 
 Make sure:
 1. define RECIPIES as 
- = {
-     'recipie_name' : {
-         fns: []
-         sleeps: []
-     }
+ = { 
+    fns: []
+    sleeps: []
  }
 
  2. fns and sleeps must be same length
@@ -16,7 +14,7 @@ Make sure:
 
 from random import gauss
 from time import sleep
-from utils import rr
+from utils import Spaces, rr, search_space, search_and_click
 import pyautogui as py
 
 
@@ -40,6 +38,10 @@ def click_bank(client):
     tr = client.dims[1]
 
     ''' Starting from furnace, click on bank. '''
+
+    result = search_space(client, Spaces, 'test/knife.png',
+                          grayscale=False, confidence=0.74)
+
     py.moveTo(rr(501, 513), rr(411, 430), max(
         0.256, gauss(0.5002, .4123)), py.easeOutBounce)
     py.click()
@@ -75,22 +77,20 @@ def click_furance_interface(client):
     py.click()
 
 
-RECIPIES = {
-    'make_cbs': {
-        'fns': [
-            click_bank,
-            deposit,
-            withdraw_and_walk_back,
-            click_furance_interface,
-        ],
-        # ----------------------------------------------------------------------------------------
-        'sleeps': [
-            lambda is_running: sleep(max(10, gauss(10.6, 0.59123))) if not is_running else sleep(
-                max(4.75, gauss(4.8, 0.39123))),
-            lambda is_running: sleep(max(.250, gauss(.3, .29123))),
-            lambda is_running: sleep(max(10, gauss(10.4002, .59123))) if not is_running else sleep(
-                max(4.75, gauss(4.8, 0.39123))),
-            lambda is_running: sleep(max(24.5, gauss(25.4002, 2.29123)))
-        ]
-    }
+RECIPIE = {
+    'fns': [
+        click_bank,
+        deposit,
+        withdraw_and_walk_back,
+        click_furance_interface,
+    ],
+    # ----------------------------------------------------------------------------------------
+    'sleeps': [
+        lambda is_running: sleep(max(10, gauss(10.6, 0.59123))) if not is_running else sleep(
+            max(4.75, gauss(4.8, 0.39123))),
+        lambda is_running: sleep(max(.250, gauss(.3, .29123))),
+        lambda is_running: sleep(max(10, gauss(10.4002, .59123))) if not is_running else sleep(
+            max(4.75, gauss(4.8, 0.39123))),
+        lambda is_running: sleep(max(24.5, gauss(25.4002, 2.29123)))
+    ]
 }

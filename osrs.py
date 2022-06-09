@@ -23,6 +23,9 @@ class OsrsClient:
         self._center_x = (self.dims[2] // 2) + self.dims[0]
         self._center_y = (self.dims[3] // 2) + self.dims[1]
 
+    def get_pid(self):
+        return self._pid
+
     def attack(self):
         """ The main attack cycle.
         """

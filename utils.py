@@ -1,12 +1,13 @@
 from random import gauss, randrange
 from subprocess import Popen, PIPE, run
+from time import sleep
 from tokenize import String
 import pyautogui
 from PIL import Image
 # import numpy as np
 from enum import Enum
 from osrs import OsrsClient
-from config import PLATFORM, SCREEN_TOP_MARGIN, OS_LINUX, OS_WIN, OS_MAC, SCREEN_TOP_MARGIN, WINDOW_TOP_MARGIN
+from config import PLATFORM, OS_LINUX, OS_WIN, OS_MAC, SCREEN_TOP_MARGIN, WINDOW_TOP_MARGIN
 
 
 class Durations(Enum):
@@ -90,7 +91,7 @@ def crop_screen_pos(dims, x_offset, y_offset, x1_offset, y1_offset):
     PA = SCREEN_TOP_MARGIN + WINDOW_TOP_MARGIN
     print(f"Platform adjustment: {PA}")
     return [screen_image(x_offset, y_offset + (PA//2), x_offset + w,
-                         y_offset + (PA//2) + h, ''), x_offset, y_offset]
+                         y_offset + (PA//2) + h, ''), x_offset, y_offset + (PA//2)]
 
 
 def crop_inventory(client: OsrsClient):
@@ -118,7 +119,6 @@ def crop_inventory(client: OsrsClient):
     |                                                                                                           |
     ------------------------------------------------------------------------------------------------------------
     """
-    x = 78
     return crop_screen_pos(client.dims, 560, 210, 725, 462)
 
 
@@ -127,7 +127,7 @@ def crop_inv_row_1(client: OsrsClient):
     641, 266
     804, 298
     '''
-    return crop_screen_pos(client.dims, 640 - 80, 250, 804 - 80, 306)
+    return crop_screen_pos(client.dims, 560, 207, 725, 247)
 
 
 def crop_inv_row_2(client: OsrsClient):
@@ -296,10 +296,11 @@ def locate(needle: Image, hay: Image, grayscale=True, confidence=0.69):
 
 
 def translate_bounds_randomly(bounds: tuple, x_offset: int, y_offset: int):
-    left = bounds[0] // 2
-    top = bounds[1] // 2
-    width = bounds[2] // 2
-    height = bounds[3] // 2
+
+    left = bounds[0]
+    top = bounds[1]
+    width = bounds[2]
+    height = bounds[3]
 
     x_left = x_offset + left
     y_top = y_offset + top
@@ -357,7 +358,14 @@ def get_space(client, space):
         return crop_west_b(client)
 
 
+def search_and_click(client: OsrsClient, space: Spaces, item: String, grayscale=True, confidence=0.69):
+    x, y = search_space(client, space, item, grayscale, confidence)
+    pyautogui.moveTo(x, y)
+    pyautogui.click()
+
 # Entry, call from client
+
+
 def search_space(client: OsrsClient, space: Spaces, item: String, grayscale=True, confidence=0.69):
     '''
         Search a space for an item
@@ -370,11 +378,18 @@ def search_space(client: OsrsClient, space: Spaces, item: String, grayscale=True
     # 4-integer tuple: (left, top, width, height)
     bounds = locate(needle, search_space, grayscale, confidence)
     if bounds is None:
-        return None
+        retries = 5
+        while bounds is None and retries > 0:
+            print(
+                f"Image not found, retrying: {retries} more times")
+            bounds = locate(needle, search_space, grayscale, confidence)
+            retries -= 1
+            sleep(.5)
+
+        if bounds is None:
+            return None
 
     x, y = translate_bounds_randomly(bounds, x_offset, y_offset)
-    pyautogui.moveTo(x, y)
-    pyautogui.click()
     return (x, y)
 
 
