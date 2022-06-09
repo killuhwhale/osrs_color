@@ -89,10 +89,23 @@ def crop_screen_pos(dims, x_offset, y_offset, x1_offset, y1_offset):
     # Update/adj with client top left corner
     x_offset_adj, y_offset_adj = x_offset + x,  y_offset + y
 
-    PA = SCREEN_TOP_MARGIN + WINDOW_TOP_MARGIN
+    print(f"Client top left: {x}, {y}")
+
+    print(f"SS top left: {x_offset_adj}, {y_offset_adj}")
+
+    # SCREEN_TOP_MARGIN + is already added to Client Position...
+    PA = WINDOW_TOP_MARGIN
     print(f"Platform adjustment: {PA}")
-    return [screen_image(x_offset_adj, y_offset_adj + (PA//2), x_offset_adj + w,
-                         y_offset_adj + (PA//2) + h, ''), x_offset_adj, y_offset_adj + (PA//2)]
+    return [
+        screen_image(
+            x_offset_adj,
+            y_offset_adj + PA,
+            x_offset_adj + w,
+            y_offset_adj + h + PA,
+            ''
+        ),
+        x_offset_adj, y_offset_adj + PA
+    ]
 
 
 def crop_inventory(client: OsrsClient):
@@ -133,12 +146,18 @@ def crop_inv_row_1(client: OsrsClient):
 
 def crop_inv_row_2(client: OsrsClient):
     #                                    x         x1
+    '''
+    margin = 63
+    y1 = 245 => 308  BUT, 312  ~ +4  Needs a -4
+    y2 = 285 => 348  BUT, 344  ~ -4  Needs a +4
+    '''
+
     return crop_screen_pos(client.dims, 560, 245, 725, 285)
 
 
 def crop_inv_row_3(client: OsrsClient):
     #                                    x         x1
-    return crop_screen_pos(client.dims, 560, 285, 725, 320)
+    return crop_screen_pos(client.dims, 560, 280, 725, 320)
 
 
 def crop_inv_row_4(client: OsrsClient):
