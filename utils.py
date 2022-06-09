@@ -127,7 +127,7 @@ def crop_inv_row_1(client: OsrsClient):
     641, 266
     804, 298
     '''
-    return crop_screen_pos(client.dims, 560, 207, 725, 247)
+    return crop_screen_pos(client.dims, 560, 210, 725, 250)
 
 
 def crop_inv_row_2(client: OsrsClient):
