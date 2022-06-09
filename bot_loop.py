@@ -107,7 +107,7 @@ class BotLoop:
                 # self.cook_from_book(client, i, user_input)
                 if not img_taken:
                     spaces = Spaces.ROW_1
-                    item = "test/goldbar.png"
+                    item = "test/knife.png"
                     # Searches a space on screen for a target and randomly clicks within its bounds if found.
                     result = search_and_click(
                         client, spaces, item, grayscale=False, confidence=0.47)
