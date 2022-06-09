@@ -124,7 +124,7 @@ def crop_inventory(client: OsrsClient):
 
 
 def crop_inv_row_1(client: OsrsClient):
-    '''
+    ''' Height of rows = 40
     641, 266
     804, 298
     '''
@@ -133,7 +133,7 @@ def crop_inv_row_1(client: OsrsClient):
 
 def crop_inv_row_2(client: OsrsClient):
     #                                    x         x1
-    return crop_screen_pos(client.dims, 560, 250, 725, 285)
+    return crop_screen_pos(client.dims, 560, 245, 725, 285)
 
 
 def crop_inv_row_3(client: OsrsClient):
@@ -392,7 +392,8 @@ def search_space(client: OsrsClient, space: Spaces, item: String, grayscale=True
     # 4-integer tuple: (left, top, width, height)
     bounds = locate(needle, search_space, grayscale, confidence)
     if bounds is None:
-        retries = 5
+        # retries = 5  TODO() Change back
+        retries = 0
         while bounds is None and retries > 0:
             print(
                 f"Image not found, retrying: {retries} more times")
