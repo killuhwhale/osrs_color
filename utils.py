@@ -83,15 +83,15 @@ def crop_screen_pos(dims, x_offset, y_offset, x1_offset, y1_offset):
     '''
 
     '''
-    x, y = dims[0], dims[1]   # minus margin since we originally mapped coordinates assuming 0,0 but it was actually off by the top margin of my mac system bar
-    # Top left
+    x, y = dims[0], dims[1]
     w, h = x1_offset - x_offset, y1_offset - y_offset
     x_offset, y_offset = x_offset + x,  y_offset + \
         y  # Update/adj with client top left corner
+
     PA = SCREEN_TOP_MARGIN + WINDOW_TOP_MARGIN
     print(f"Platform adjustment: {PA}")
     return [screen_image(x_offset, y_offset + (PA//2), x_offset + w,
-                         y_offset + (PA//2) + h, ''), x_offset, y_offset + (PA//2)]
+                         y_offset + (PA//2) + h, ''), x_offset, y_offset + (PA)]
 
 
 def crop_inventory(client: OsrsClient):
