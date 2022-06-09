@@ -85,13 +85,14 @@ def crop_screen_pos(dims, x_offset, y_offset, x1_offset, y1_offset):
     '''
     x, y = dims[0], dims[1]
     w, h = x1_offset - x_offset, y1_offset - y_offset
-    x_offset, y_offset = x_offset + x,  y_offset + \
-        y  # Update/adj with client top left corner
+
+    # Update/adj with client top left corner
+    x_offset_adj, y_offset_adj = x_offset + x,  y_offset + y
 
     PA = SCREEN_TOP_MARGIN + WINDOW_TOP_MARGIN
     print(f"Platform adjustment: {PA}")
-    return [screen_image(x_offset, y_offset + (PA//2), x_offset + w,
-                         y_offset + (PA//2) + h, ''), x_offset, y_offset + (PA)]
+    return [screen_image(x_offset_adj, y_offset_adj + (PA//2), x_offset_adj + w,
+                         y_offset_adj + (PA//2) + h, ''), x_offset_adj, y_offset_adj + (PA//2)]
 
 
 def crop_inventory(client: OsrsClient):
@@ -132,32 +133,32 @@ def crop_inv_row_1(client: OsrsClient):
 
 def crop_inv_row_2(client: OsrsClient):
     #                                    x         x1
-    return crop_screen_pos(client.dims, 640, 305, 805, 340)
+    return crop_screen_pos(client.dims, 560, 250, 725, 285)
 
 
 def crop_inv_row_3(client: OsrsClient):
     #                                    x         x1
-    return crop_screen_pos(client.dims, 640, 340, 805, 375)
+    return crop_screen_pos(client.dims, 560, 285, 725, 320)
 
 
 def crop_inv_row_4(client: OsrsClient):
     #                                    x         x1
-    return crop_screen_pos(client.dims, 640, 375, 805, 410)
+    return crop_screen_pos(client.dims, 560, 320, 725, 355)
 
 
 def crop_inv_row_5(client: OsrsClient):
     #                                    x         x1
-    return crop_screen_pos(client.dims, 640, 410, 805, 445)
+    return crop_screen_pos(client.dims, 560, 355, 725, 390)
 
 
 def crop_inv_row_6(client: OsrsClient):
     #                                    x         x1
-    return crop_screen_pos(client.dims, 640, 445, 805, 480)
+    return crop_screen_pos(client.dims, 560, 390, 725, 425)
 
 
 def crop_inv_row_7(client: OsrsClient):
     #                                    x         x1
-    return crop_screen_pos(client.dims, 640, 480, 805, 515)
+    return crop_screen_pos(client.dims, 560, 425, 725, 460)
 
 
 def crop_inv_col_1(client: OsrsClient):
@@ -296,12 +297,23 @@ def locate(needle: Image, hay: Image, grayscale=True, confidence=0.69):
 
 
 def translate_bounds_randomly(bounds: tuple, x_offset: int, y_offset: int):
+    '''
+    The top left of the image is being reported at y = 235 but is really at y = 215, d = -20
+
+    Top of inv        -------------------
+    item top          -------------------   
+    bounds top        -------------------
+    bounds bottom     -------------------
+    item bottom       -------------------
+
+    '''
 
     left = bounds[0]
     top = bounds[1]
     width = bounds[2]
     height = bounds[3]
-
+    print("Bounds", bounds)
+    print(f"TOp Left of image: {x_offset}, {y_offset}")
     x_left = x_offset + left
     y_top = y_offset + top
 
@@ -360,6 +372,8 @@ def get_space(client, space):
 
 def search_and_click(client: OsrsClient, space: Spaces, item: String, grayscale=True, confidence=0.69):
     x, y = search_space(client, space, item, grayscale, confidence)
+    if x is None:
+        return None
     pyautogui.moveTo(x, y)
     pyautogui.click()
 
@@ -387,10 +401,10 @@ def search_space(client: OsrsClient, space: Spaces, item: String, grayscale=True
             sleep(.5)
 
         if bounds is None:
-            return None
+            return None, None
 
     x, y = translate_bounds_randomly(bounds, x_offset, y_offset)
-    return (x, y)
+    return x, y
 
 
 def r_mouse_duration(dur=None):
