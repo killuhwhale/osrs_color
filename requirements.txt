@@ -5,6 +5,7 @@ Pillow==9.1.1
 PyAutoGUI==0.9.53
 PyGetWindow==0.0.9
 PyMsgBox==1.0.9
+pynput==1.7.6
 pyobjc==8.5
 pyobjc-core==8.5
 pyobjc-framework-Accessibility==8.5
@@ -147,3 +148,4 @@ PyRect==0.2.0
 PyScreeze==0.1.28
 pytweening==1.0.4
 rubicon-objc==0.4.2
+six==1.16.0
