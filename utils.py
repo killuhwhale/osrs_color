@@ -4,7 +4,8 @@ from time import sleep
 from tokenize import String
 import pyautogui
 from PIL import Image
-# import numpy as np
+import cv2
+import numpy as np
 from enum import Enum
 from osrs import OsrsClient
 from config import PLATFORM, OS_LINUX, OS_WIN, OS_MAC, SCREEN_TOP_MARGIN, WINDOW_TOP_MARGIN
@@ -133,7 +134,7 @@ def crop_inventory(client: OsrsClient):
     |                                                                                                           |
     ------------------------------------------------------------------------------------------------------------
     """
-    return crop_screen_pos(client.dims, 560, 210, 725, 462)
+    return crop_screen_pos(client.dims, 560, 210, 725, 465)
 
 
 def crop_inv_row_1(client: OsrsClient):
@@ -162,42 +163,42 @@ def crop_inv_row_3(client: OsrsClient):
 
 def crop_inv_row_4(client: OsrsClient):
     #                                    x         x1
-    return crop_screen_pos(client.dims, 560, 320, 725, 355)
+    return crop_screen_pos(client.dims, 560, 315, 725, 355)
 
 
 def crop_inv_row_5(client: OsrsClient):
     #                                    x         x1
-    return crop_screen_pos(client.dims, 560, 355, 725, 390)
+    return crop_screen_pos(client.dims, 560, 350, 725, 390)
 
 
 def crop_inv_row_6(client: OsrsClient):
     #                                    x         x1
-    return crop_screen_pos(client.dims, 560, 390, 725, 425)
+    return crop_screen_pos(client.dims, 560, 385, 725, 425)
 
 
 def crop_inv_row_7(client: OsrsClient):
     #                                    x         x1
-    return crop_screen_pos(client.dims, 560, 425, 725, 460)
+    return crop_screen_pos(client.dims, 560, 425, 725, 465)
 
 
 def crop_inv_col_1(client: OsrsClient):
     #                                         y         y1
-    return crop_screen_pos(client.dims, 640, 265, 680, 515)
+    return crop_screen_pos(client.dims, 560, 210, 600, 465)
 
 
 def crop_inv_col_2(client: OsrsClient):
     #                                         y         y1
-    return crop_screen_pos(client.dims, 680, 265, 720, 515)
+    return crop_screen_pos(client.dims, 600, 210, 640, 465)
 
 
 def crop_inv_col_3(client: OsrsClient):
     #                                         y         y1
-    return crop_screen_pos(client.dims, 720, 265, 765, 515)
+    return crop_screen_pos(client.dims, 642, 210, 683, 465)
 
 
 def crop_inv_col_4(client: OsrsClient):
     #                                         y         y1
-    return crop_screen_pos(client.dims, 765, 265, 805, 515)
+    return crop_screen_pos(client.dims, 685, 210, 725, 465)
 
 
 def crop_north_a(client: OsrsClient):
@@ -210,7 +211,7 @@ def crop_north_a(client: OsrsClient):
 
     '''
     #                                         y         y1
-    return crop_screen_pos(client.dims, 100, 155, 578, 215)  # north
+    return crop_screen_pos(client.dims, 18, 87, 498, 167)  # north
 
 
 def crop_north_b(client: OsrsClient):
@@ -223,7 +224,7 @@ def crop_north_b(client: OsrsClient):
 
     '''
     #                                         y         y1
-    return crop_screen_pos(client.dims, 100, 95, 578, 155)  # top North b
+    return crop_screen_pos(client.dims, 18, 7, 498, 87)  # top North b
 
 
 def crop_east_a(client: OsrsClient):
@@ -236,7 +237,7 @@ def crop_east_a(client: OsrsClient):
 
     '''
     #                                         y         y1
-    return crop_screen_pos(client.dims, 345, 63, 460, 388)  # east  a
+    return crop_screen_pos(client.dims, 258, 7, 378, 327)  # east  a
 
 
 def crop_east_b(client: OsrsClient):
@@ -249,7 +250,7 @@ def crop_east_b(client: OsrsClient):
 
     '''
     #                                         y         y1
-    return crop_screen_pos(client.dims, 460, 63, 576, 388)  # east  b
+    return crop_screen_pos(client.dims, 378, 7, 498, 327)  # east  b
 
 
 def crop_south_a(client: OsrsClient):
@@ -264,7 +265,7 @@ def crop_south_a(client: OsrsClient):
 
     '''
     #                                         y         y1
-    return crop_screen_pos(client.dims, 105, 214, 577, 301)  # south  a
+    return crop_screen_pos(client.dims, 18, 167, 498, 247)  # south  a
 
 
 def crop_south_b(client: OsrsClient):
@@ -279,7 +280,7 @@ def crop_south_b(client: OsrsClient):
 
     '''
     #                                         y         y1
-    return crop_screen_pos(client.dims, 105, 301, 577, 388)  # south  b
+    return crop_screen_pos(client.dims, 18, 247, 498, 327)  # south  b
 
 
 def crop_west_a(client: OsrsClient):
@@ -292,7 +293,7 @@ def crop_west_a(client: OsrsClient):
 
     '''
     #                                         y         y1
-    return crop_screen_pos(client.dims, 224, 94, 346, 389)  # west  a
+    return crop_screen_pos(client.dims, 138, 7, 258, 327)  # west  a
 
 
 def crop_west_b(client: OsrsClient):
@@ -305,7 +306,7 @@ def crop_west_b(client: OsrsClient):
 
     '''
     #                                         y         y1
-    return crop_screen_pos(client.dims, 103, 94, 224, 389)  # west  b
+    return crop_screen_pos(client.dims, 18, 7, 138, 327)  # west  b
 
 
 def locate(needle: Image, hay: Image, grayscale=True, confidence=0.69):
@@ -425,6 +426,77 @@ def search_space(client: OsrsClient, space: Spaces, item: String, grayscale=True
 
     x, y = translate_bounds_randomly(bounds, x_offset, y_offset)
     return x, y
+
+
+def rgb_to_hsv(rgb):
+    r, g, b = rgb
+    r, g, b = r/255.0, g/255.0, b/255.0
+    mx = max(r, g, b)
+    mn = min(r, g, b)
+    df = mx-mn
+    if mx == mn:
+        h = 0
+    elif mx == r:
+        h = (60 * ((g-b)/df) + 360) % 360
+    elif mx == g:
+        h = (60 * ((b-r)/df) + 120) % 360
+    elif mx == b:
+        h = (60 * ((r-g)/df) + 240) % 360
+    if mx == 0:
+        s = 0
+    else:
+        s = (df/mx)*100
+    v = mx*100
+    return np.array([h, s, v])
+
+
+def locate_color(color_low: list, color_high: list, search_space: Image, grayscale: bool, confidence: float) -> tuple:
+    # CV2 to locate a color
+    # Convert Space to HSV color space
+    img = np.asarray(search_space)
+    hsv = cv2.cvtColor(img, cv2.COLOR_RGB2HSV)
+
+    color_range_low = color_low
+    color_range_high = color_high
+
+    color_range_low = np.array([107, 209, 23])
+    color_range_high = np.array([180, 210, 238])
+    # Threshold the HSV image to get only red colors
+    mask = cv2.inRange(hsv, color_range_low, color_range_high)
+    contours, hierarchy = cv2.findContours(
+        mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+
+    # TODO() sort and choose largest bound.
+    bounds = cv2.boundingRect(contours[0])
+    x, y, w, h = bounds
+    print(f"Top left {(x, y)} w: {w}  h: {h}")
+
+    # Draw and show contours
+    boximg = cv2.drawContours(img, contours, -1, (0, 255, 0), 3)
+    cv2.imshow('img', hsv)
+    cv2.imshow('mask', mask)
+    cv2.imshow('res', boximg)
+    cv2.waitKey(20)
+    cv2.destroyAllWindows()
+    return bounds
+
+
+def search_space_color(client: OsrsClient, space: Spaces, color: list, grayscale=True, confidence=0.69):
+    '''
+        Search a space for an item
+    '''
+    # Offset from space
+    search_space, x_offset, y_offset = get_space(client, space)
+
+    color = [279, 82, 93]
+    # 4-integer tuple: (left, top, width, height)
+    # Offset from image
+    bounds = locate_color(color, color, search_space, grayscale, confidence)
+
+    x, y = translate_bounds_randomly(bounds, x_offset, y_offset)
+
+    pyautogui.moveTo(x, y, duration=0.34)
+    pyautogui.click()
 
 
 def r_mouse_duration(dur=None):

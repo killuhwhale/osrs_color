@@ -1,6 +1,6 @@
 from collections import defaultdict
 from time import sleep, time
-from utils import Spaces, search_space, move_map_deg, reset_map, move_map_pitch, search_and_click
+from utils import Spaces, search_space, move_map_deg, reset_map, move_map_pitch, search_and_click, search_space_color
 from cookbooks import cookbook_template
 
 ACCOUNTS = [
@@ -106,11 +106,13 @@ class BotLoop:
 
                 # self.cook_from_book(client, i, user_input)
                 if not img_taken:
-                    spaces = Spaces.ROW_2
+                    spaces = Spaces.N_A
                     item = "test/knife.png"
                     # Searches a space on screen for a target and randomly clicks within its bounds if found.
-                    result = search_and_click(
-                        client, spaces, item, grayscale=False, confidence=0.47)
+                    # result = search_and_click(
+                    #     client, spaces, item, grayscale=False, confidence=0.47)
+                    result = search_space_color(
+                        client, spaces, [], grayscale=False, confidence=0.47)
 
                     print("Img result: ", result)
 
