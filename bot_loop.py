@@ -1,6 +1,11 @@
 from collections import defaultdict
+from random import gauss
+from PIL import Image
 from time import sleep, time
-from utils import Spaces, search_space, move_map_deg, reset_map, move_map_pitch, search_and_click, search_space_color
+from Colors import Colors
+from Spaces import Spaces
+from Search import Search
+from Items import Items
 from cookbooks import cookbook_template
 
 ACCOUNTS = [
@@ -40,6 +45,7 @@ class SleepCycle:
 
 
 class BotLoop:
+
     def __init__(self, DEBUG):
         self._clients = []
         self._q = None
@@ -87,14 +93,13 @@ class BotLoop:
                 self._stopped_clients.append(i)
 
     def _run(self):
+        user_input = ''
+        is_running = True
+        img_taken = False  # Testing purposes
+
         print("starting to bot!")
         if not self.DEBUG:
             self._login()
-
-        img_taken = False  # Testing purposes
-        user_input = ''
-        # Need a way to monitor running for each account as well...
-        is_running = True
 
         while True and len(self._stopped_clients) < len(self._clients):
             if not self._q.empty():
@@ -104,24 +109,34 @@ class BotLoop:
                 if i in self._stopped_clients:
                     continue
 
+                # res = Search.search_intf_image_to_num(
+                #     client, Spaces.INTF_RUN)
+                # print(f"Hp: {res}")
+
+                # space = Spaces.INV
+                # for item in [Items.GOLD_BAR, Items.DIAMOND, Items.BRACELET_DIAMOND]:
+                #     print(item)
+                #     Search.click(Search.search_space_item(
+                #         client, space, item, confidence=item.value['conf']))
+
+                # Search.click(Search.click_interface(
+                #     client, Spaces.SKILL_ATT))
+
+                Search.click(Search.search_space_color(
+                    client, Spaces.N_A, Colors.NPC_PURPLE))
+
+                # print(Search.chat_head_showing(client, left=True))
+
+                sleep(1)
                 # self.cook_from_book(client, i, user_input)
                 if not img_taken:
-                    spaces = Spaces.N_A
-                    item = "test/knife.png"
-                    # Searches a space on screen for a target and randomly clicks within its bounds if found.
-                    # result = search_and_click(
-                    #     client, spaces, item, grayscale=False, confidence=0.47)
-                    result = search_space_color(
-                        client, spaces, [], grayscale=False, confidence=0.47)
 
-                    print("Img result: ", result)
-
+                    #           End Client Loop          #
+                    ######################################
+                    pass
             img_taken = True
-            # End Client Loop
-
-            # Reset user input
             user_input = ''
-            # sleep(2.5)
+            sleep(.5)
 
 
 if __name__ == "__main__":

@@ -1,9 +1,8 @@
-from random import gauss
-from time import sleep
 from utils import rr
-import pyautogui as py
-import cv2
-7
+from Spaces import Spaces
+from Search import Search
+from Items import Items
+from Colors import Colors
 
 '''  The client has a pos_x and pos_y indicating the top left corner  
 
@@ -18,6 +17,12 @@ def click_gilinor_guide(client):
 
     NPC Indicators
     '''
+    Search.click_interface(client, )
+    pt = Search.search_space_color(client, Spaces.N_A, Colors.NPC_PURPLE)
+    Search.click(pt)
+
+    # Verify this step is complete.
+
     # Top left & Top right
     tl = client.dims[0]
     tr = client.dims[1]

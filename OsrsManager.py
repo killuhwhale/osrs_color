@@ -12,7 +12,7 @@ from osrs_input import OsrsInput
 from utils import run_cmd, run_script
 from config import PLATFORM, SCREEN_TOP_MARGIN, WINDOW_TOP_MARGIN, OS_LINUX, OS_WIN, OS_MAC
 
-DEGUB = True
+DEBUG = True
 SOCKS_HOST = ''
 SOCKS_PORT = 1080
 
@@ -58,7 +58,7 @@ class OsrsManager:
         # Process queue
         self._q = Queue()
 
-        self._botLoop = BotLoop(DEGUB)
+        self._botLoop = BotLoop(DEBUG)
         self._input = OsrsInput()
 
         self.create_clients()
@@ -68,19 +68,12 @@ class OsrsManager:
 
     def create_clients(self):
         # Launch Processes
-        if not DEGUB:
+        if not DEBUG:
             for i in range(self._num_clients):
                 cmd = f'java -jar ./RuneLite.jar'
+                # ssh -D 13377  chrisandaya@34.121.188.5 -i ~/.ssh/google_compute_engine
+                # java -DsocksProxyHost=127.0.0.1 -DsocksProxyPort=13377 -jar runelite.jar
                 # cmd = f'java -DsocksProxyHost={SOCKS_HOST} -DsocksProxyPort={SOCKS_PORT} -jar runelite.jar'
-                # amsterdam.nl.socks.nordhold.net
-                # atlanta.us.socks.nordhold.net
-                # dallas.us.socks.nordhold.net
-                # los-angeles.us.socks.nordhold.net
-                # nl.socks.nordhold.net
-                # se.socks.nordhold.net
-                # stockholm.se.socks.nordhold.net
-                # us.socks.nordhold.net
-                # java -DsocksProxyHost={host} -DsocksProxyPort={port} -jar runelite.jar
                 run_cmd(cmd)
 
         print("Waiting for clients to load")

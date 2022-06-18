@@ -1,6 +1,13 @@
 import cv2 as cv
 import argparse
 
+
+'''
+    Goal is to get a white outline on a black background.
+
+
+'''
+
 max_value = 255
 max_value_H = 360//2
 low_H = 0
@@ -89,7 +96,7 @@ cv.createTrackbar(high_V_name, window_detection_name, high_V,
                   max_value, on_high_V_thresh_trackbar)
 
 
-img = cv.imread("cvtestimg.png")
+img = cv.imread("inrange_test.png")
 
 
 old_low_H = low_H

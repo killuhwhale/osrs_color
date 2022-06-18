@@ -1,6 +1,8 @@
 import collections
 import cv2
 from cv2 import cvtColor
+from Search import Items
+from Spaces import Spaces
 import pytesseract
 import numpy as np
 import pyautogui
@@ -21,6 +23,7 @@ tesseract_=?
 
 
 '''
+CLIENT_DIMS = [0, 25, 765, 535]
 
 
 def ocr(img: np.mat, scale_up, scale_down, kernal_a, kernal_b, iters, image=False):
@@ -168,7 +171,7 @@ def transform_hori(img: Image):
 def test_pyauto_search():
     hori_img = Image.open("runImgs/hori_mask.png")
     images = [Image.open(f"runImgs/run_{i}.png") for i in range(101)]
-    search = Search()
+
     client_dims = [0, 25, 765, 535]
 
     for i in range(101):
@@ -205,5 +208,39 @@ def test_multicolor():
     cv2.destroyAllWindows()
 
 
+def imshow(img: Image):
+    cv2.imshow("imshow", np.array(img.convert('RGB')))
+    cv2.moveWindow("imshow", 1000, 30)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+
+
+def take_ss_of_item():
+    RUNE_SHOT = True
+    CITEM = Items.GOLD_BAR
+    while True:
+        if RUNE_SHOT:
+            img, x, y = Spaces._crop_screen_pos(
+                CLIENT_DIMS, 565, 220, 590, 237, f"needles/items/{CITEM}.png")
+        else:
+            img, x, y = Spaces._crop_screen_pos(
+                CLIENT_DIMS, 560, 210, 595, 245, f"needles/items/{CITEM}.png")
+
+        imshow(img)
+
+
+def avg_color():
+    img = cv2.imread('chat_head.png')
+    img_empty = cv2.imread('chat_head_empty.png')
+
+    avg_color_per_row = np.average(img, axis=0)
+    avg_color = np.average(avg_color_per_row, axis=0)
+
+    avg_color_per_row_empty = np.average(img_empty, axis=0)
+    avg_color_empty = np.average(avg_color_per_row_empty, axis=0)
+    print(avg_color, avg_color_empty)
+    print(np.average(avg_color), np.average(avg_color_empty))
+
+
 if __name__ == "__main__":
-    test_multicolor()
+    avg_color()

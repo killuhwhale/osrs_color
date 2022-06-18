@@ -1,14 +1,8 @@
 from random import gauss, randrange
 from subprocess import Popen, PIPE, run
 from time import sleep
-from tokenize import String
-import pyautogui
-from PIL import Image
-import cv2
-import numpy as np
+
 from enum import Enum
-from osrs import OsrsClient
-from config import PLATFORM, OS_LINUX, OS_WIN, OS_MAC, SCREEN_TOP_MARGIN, WINDOW_TOP_MARGIN
 
 
 class Durations(Enum):
@@ -17,29 +11,6 @@ class Durations(Enum):
     SHORT = 3
     MED = 4
     LONG = 5
-
-
-class Spaces(Enum):
-    INV = 1
-    ROW_1 = 2
-    ROW_2 = 3
-    ROW_3 = 4
-    ROW_4 = 5
-    ROW_5 = 6
-    ROW_6 = 7
-    ROW_7 = 8
-    COL_1 = 9
-    COL_2 = 10
-    COL_3 = 11
-    COL_4 = 12
-    N_A = 13   # North A (closer to player)
-    N_B = 14   # North B (outside North A)
-    E_A = 15
-    E_B = 16
-    S_A = 17
-    S_B = 18
-    W_A = 19
-    W_B = 20
 
 
 def run_script(proc, script):
@@ -61,442 +32,7 @@ def run_cmd(cmd, as_list=False):
 
 
 def rr(a, b):
-    ''' Returns random range between a and b. '''
-    return randrange(a, b)
-
-
-def screen_image(left=0, top=0, right=0, bottom=0, name='screenshot.png') -> Image:
-    '''
-        Given the screen postions of ea corner, returns an Image of the screen region.
-    '''
-    myScreenshot: Image = pyautogui.screenshot(
-        'test.png', region=(left, top, (right - left), (bottom - top)))
-    print(f"SS@: {(left, top), {((right - left), (bottom - top))}}")
-    return myScreenshot
-
-
-def load_img(name):
-    ''' Lods image from disk '''
-    return Image.open(f'needles/{name}')
-
-
-def crop_screen_pos(dims, x_offset, y_offset, x1_offset, y1_offset):
-    '''
-
-    '''
-    x, y = dims[0], dims[1]
-    w, h = x1_offset - x_offset, y1_offset - y_offset
-
-    # Update/adj with client top left corner
-    x_offset_adj, y_offset_adj = x_offset + x,  y_offset + y
-
-    print(f"Client top left: {x}, {y}")
-
-    print(f"SS top left: {x_offset_adj}, {y_offset_adj}")
-
-    # SCREEN_TOP_MARGIN + is already added to Client Position...
-    PA = WINDOW_TOP_MARGIN
-    print(f"Platform adjustment: {PA}")
-    return [
-        screen_image(
-            x_offset_adj,
-            y_offset_adj + PA,
-            x_offset_adj + w,
-            y_offset_adj + h + PA,
-            ''
-        ),
-        x_offset_adj, y_offset_adj + PA
-    ]
-
-
-def crop_inventory(client: OsrsClient):
-    """Crops the screenshot of the window to the Inventory.
-    Maps screen coords to Image coords
-
-    x_offset = 397 + client.x
-    y_offset = 259 + client.y
-
-    ------------------------------------------------------------------------------------------------------------
-    | dims[0], dims[1]                                                                                          |
-    |                                                                                                           |
-    |                                                                                                           |
-    |  (397, -820)> ------------------------------------------------------                                      |                  
-    |               |  w = 182   h = 265  **Represents Inventoy**         |                                     |
-    |               |                                                     |                                     |
-    |               |                                                     |                                     |
-    |               |                                                     |                                     |
-    |               |                                                     |                                     |
-    |               ------------------------------------------------------   < (579, -555)                      |
-    |                                                                                                           |
-    |                                                       x_offset + w                                        |
-    |                                                       y_offset + h                                        |
-    |                                                                                                           |
-    |                                                                                                           |
-    ------------------------------------------------------------------------------------------------------------
-    """
-    return crop_screen_pos(client.dims, 560, 210, 725, 465)
-
-
-def crop_inv_row_1(client: OsrsClient):
-    ''' Height of rows = 40
-    641, 266
-    804, 298
-    '''
-    return crop_screen_pos(client.dims, 560, 210, 725, 250)
-
-
-def crop_inv_row_2(client: OsrsClient):
-    #                                    x         x1
-    '''
-    margin = 63
-    y1 = 245 => 308  BUT, 312  ~ +4  Needs a -4
-    y2 = 285 => 348  BUT, 344  ~ -4  Needs a +4
-    '''
-
-    return crop_screen_pos(client.dims, 560, 245, 725, 285)
-
-
-def crop_inv_row_3(client: OsrsClient):
-    #                                    x         x1
-    return crop_screen_pos(client.dims, 560, 280, 725, 320)
-
-
-def crop_inv_row_4(client: OsrsClient):
-    #                                    x         x1
-    return crop_screen_pos(client.dims, 560, 315, 725, 355)
-
-
-def crop_inv_row_5(client: OsrsClient):
-    #                                    x         x1
-    return crop_screen_pos(client.dims, 560, 350, 725, 390)
-
-
-def crop_inv_row_6(client: OsrsClient):
-    #                                    x         x1
-    return crop_screen_pos(client.dims, 560, 385, 725, 425)
-
-
-def crop_inv_row_7(client: OsrsClient):
-    #                                    x         x1
-    return crop_screen_pos(client.dims, 560, 425, 725, 465)
-
-
-def crop_inv_col_1(client: OsrsClient):
-    #                                         y         y1
-    return crop_screen_pos(client.dims, 560, 210, 600, 465)
-
-
-def crop_inv_col_2(client: OsrsClient):
-    #                                         y         y1
-    return crop_screen_pos(client.dims, 600, 210, 640, 465)
-
-
-def crop_inv_col_3(client: OsrsClient):
-    #                                         y         y1
-    return crop_screen_pos(client.dims, 642, 210, 683, 465)
-
-
-def crop_inv_col_4(client: OsrsClient):
-    #                                         y         y1
-    return crop_screen_pos(client.dims, 685, 210, 725, 465)
-
-
-def crop_north_a(client: OsrsClient):
-    '''
-    100, 95
-
-    -----------, 155-----------------
-
-                            578, 215
-
-    '''
-    #                                         y         y1
-    return crop_screen_pos(client.dims, 18, 87, 498, 167)  # north
-
-
-def crop_north_b(client: OsrsClient):
-    '''
-    100, 95
-
-    -------------------------------
-
-                            578, 215
-
-    '''
-    #                                         y         y1
-    return crop_screen_pos(client.dims, 18, 7, 498, 87)  # top North b
-
-
-def crop_east_a(client: OsrsClient):
-    '''
-    345, 63
-
-    -------------460, ------------------
-
-                            576, 388
-
-    '''
-    #                                         y         y1
-    return crop_screen_pos(client.dims, 258, 7, 378, 327)  # east  a
-
-
-def crop_east_b(client: OsrsClient):
-    '''
-    345, 63
-
-    -------------231, ------------------
-
-                            576, 388
-
-    '''
-    #                                         y         y1
-    return crop_screen_pos(client.dims, 378, 7, 498, 327)  # east  b
-
-
-def crop_south_a(client: OsrsClient):
-    '''
-    105, 214
-
-
-
-    -------------,301 ------------------
-
-                            577, 388
-
-    '''
-    #                                         y         y1
-    return crop_screen_pos(client.dims, 18, 167, 498, 247)  # south  a
-
-
-def crop_south_b(client: OsrsClient):
-    '''
-    105, 214
-
-
-
-    -------------,301 ------------------
-
-                            577, 388
-
-    '''
-    #                                         y         y1
-    return crop_screen_pos(client.dims, 18, 247, 498, 327)  # south  b
-
-
-def crop_west_a(client: OsrsClient):
-    '''
-    103, 94
-
-    -------------224, ------------------
-
-                            346, 389
-
-    '''
-    #                                         y         y1
-    return crop_screen_pos(client.dims, 138, 7, 258, 327)  # west  a
-
-
-def crop_west_b(client: OsrsClient):
-    '''
-    103, 94
-
-    -------------224, ------------------
-
-                            346, 389
-
-    '''
-    #                                         y         y1
-    return crop_screen_pos(client.dims, 18, 7, 138, 327)  # west  b
-
-
-def locate(needle: Image, hay: Image, grayscale=True, confidence=0.69):
-
-    print(f"Needle size: {needle}")
-    print(f"Hay size: {hay}")
-    return pyautogui.locate(needle, hay, grayscale=grayscale,  confidence=confidence)
-
-
-def translate_bounds_randomly(bounds: tuple, x_offset: int, y_offset: int):
-    '''
-    The top left of the image is being reported at y = 235 but is really at y = 215, d = -20
-
-    Top of inv        -------------------
-    item top          -------------------   
-    bounds top        -------------------
-    bounds bottom     -------------------
-    item bottom       -------------------
-
-    '''
-
-    left = bounds[0]
-    top = bounds[1]
-    width = bounds[2]
-    height = bounds[3]
-    print("Bounds", bounds)
-    print(f"TOp Left of image: {x_offset}, {y_offset}")
-    x_left = x_offset + left
-    y_top = y_offset + top
-
-    x_right = x_left + width
-    y_bottom = y_top + height
-
-    print(f"Click x between {(x_left, x_right)} and y {(y_top, y_bottom)}")
-    click_x = rr(x_left, x_right)
-    click_y = rr(y_top, y_bottom)
-    print(f"Clickk between {click_x} and {click_y}")
-    return (click_x, click_y)
-
-
-def get_space(client, space):
-    if space == Spaces.INV:
-        return crop_inventory(client)
-    if space == Spaces.ROW_1:
-        return crop_inv_row_1(client)
-    if space == Spaces.ROW_2:
-        return crop_inv_row_2(client)
-    if space == Spaces.ROW_3:
-        return crop_inv_row_3(client)
-    if space == Spaces.ROW_4:
-        return crop_inv_row_4(client)
-    if space == Spaces.ROW_5:
-        return crop_inv_row_5(client)
-    if space == Spaces.ROW_6:
-        return crop_inv_row_6(client)
-    if space == Spaces.ROW_7:
-        return crop_inv_row_7(client)
-    if space == Spaces.COL_1:
-        return crop_inv_col_1(client)
-    if space == Spaces.COL_2:
-        return crop_inv_col_2(client)
-    if space == Spaces.COL_3:
-        return crop_inv_col_3(client)
-    if space == Spaces.COL_4:
-        return crop_inv_col_4(client)
-    if space == Spaces.N_A:
-        return crop_north_a(client)
-    if space == Spaces.N_B:
-        return crop_north_b(client)
-    if space == Spaces.E_A:
-        return crop_east_a(client)
-    if space == Spaces.E_B:
-        return crop_east_b(client)
-    if space == Spaces.S_A:
-        return crop_south_a(client)
-    if space == Spaces.S_B:
-        return crop_south_b(client)
-    if space == Spaces.W_A:
-        return crop_west_a(client)
-    if space == Spaces.W_B:
-        return crop_west_b(client)
-
-
-def search_and_click(client: OsrsClient, space: Spaces, item: String, grayscale=True, confidence=0.69):
-    x, y = search_space(client, space, item, grayscale, confidence)
-    if x is None:
-        return None
-    pyautogui.moveTo(x, y)
-    pyautogui.click()
-
-# Entry, call from client
-
-
-def search_space(client: OsrsClient, space: Spaces, item: String, grayscale=True, confidence=0.69):
-    '''
-        Search a space for an item
-    '''
-    search_space, x_offset, y_offset = get_space(client, space)
-
-    # Img of inventory
-    needle = load_img(item)
-
-    # 4-integer tuple: (left, top, width, height)
-    bounds = locate(needle, search_space, grayscale, confidence)
-    if bounds is None:
-        # retries = 5  TODO() Change back
-        retries = 0
-        while bounds is None and retries > 0:
-            print(
-                f"Image not found, retrying: {retries} more times")
-            bounds = locate(needle, search_space, grayscale, confidence)
-            retries -= 1
-            sleep(.5)
-
-        if bounds is None:
-            return None, None
-
-    x, y = translate_bounds_randomly(bounds, x_offset, y_offset)
-    return x, y
-
-
-def rgb_to_hsv(rgb):
-    r, g, b = rgb
-    r, g, b = r/255.0, g/255.0, b/255.0
-    mx = max(r, g, b)
-    mn = min(r, g, b)
-    df = mx-mn
-    if mx == mn:
-        h = 0
-    elif mx == r:
-        h = (60 * ((g-b)/df) + 360) % 360
-    elif mx == g:
-        h = (60 * ((b-r)/df) + 120) % 360
-    elif mx == b:
-        h = (60 * ((r-g)/df) + 240) % 360
-    if mx == 0:
-        s = 0
-    else:
-        s = (df/mx)*100
-    v = mx*100
-    return np.array([h, s, v])
-
-
-def locate_color(color_low: list, color_high: list, search_space: Image, grayscale: bool, confidence: float) -> tuple:
-    # CV2 to locate a color
-    # Convert Space to HSV color space
-    img = np.asarray(search_space)
-    hsv = cv2.cvtColor(img, cv2.COLOR_RGB2HSV)
-
-    color_range_low = color_low
-    color_range_high = color_high
-
-    color_range_low = np.array([107, 209, 23])
-    color_range_high = np.array([180, 210, 238])
-    # Threshold the HSV image to get only red colors
-    mask = cv2.inRange(hsv, color_range_low, color_range_high)
-    contours, hierarchy = cv2.findContours(
-        mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-
-    # TODO() sort and choose largest bound.
-    bounds = cv2.boundingRect(contours[0])
-    x, y, w, h = bounds
-    print(f"Top left {(x, y)} w: {w}  h: {h}")
-
-    # Draw and show contours
-    boximg = cv2.drawContours(img, contours, -1, (0, 255, 0), 3)
-    cv2.imshow('img', hsv)
-    cv2.imshow('mask', mask)
-    cv2.imshow('res', boximg)
-    cv2.waitKey(20)
-    cv2.destroyAllWindows()
-    return bounds
-
-
-def search_space_color(client: OsrsClient, space: Spaces, color: list, grayscale=True, confidence=0.69):
-    '''
-        Search a space for an item
-    '''
-    # Offset from space
-    search_space, x_offset, y_offset = get_space(client, space)
-
-    color = [279, 82, 93]
-    # 4-integer tuple: (left, top, width, height)
-    # Offset from image
-    bounds = locate_color(color, color, search_space, grayscale, confidence)
-
-    x, y = translate_bounds_randomly(bounds, x_offset, y_offset)
-
-    pyautogui.moveTo(x, y, duration=0.34)
-    pyautogui.click()
+    return randrange(min(a, b), max(a, b))
 
 
 def r_mouse_duration(dur=None):
@@ -518,169 +54,124 @@ def r_mouse_duration(dur=None):
         return gauss(0.6, 0.175)
 
 
-def reset_map(client):
+class Map:
+    def __init__(self):
+        pass
+
+    def reset_map(self, client):
+        '''
+        629, 65
+        649, 86
+        '''
+
+        x, y = rr(629, 649), rr(65, 86)
+        pyautogui.moveTo(x, y, duration=r_mouse_duration())
+        pyautogui.click()
+
+    def move_map_deg(self, client, degs):
+        '''
+        352, 302
+        626, 296
+
+        w = client.doms[2]
+        h = client.doms[3]
+        rr(  )
+
+        deg_90_dist = 10
+        (dims[0], dims[1])
+        ___________________________________
+        |   |        W                |   |
+        |   |<-  w- 2 * deg_90_dist ->|   |
+        |   |                         |   |
+        |   |                         |   |
+        |   |                         |   |
+        |   |                         |   |
+        |   |                         |   |
+        -----------------------------------
+
+        90degress = delta x = +274  N -> E      
+        '''
+        deg_to_x_factor = 2.92
+
+        deg_90_dist = int(degs * deg_to_x_factor)
+        dims = client.dims
+        x_offset = dims[0]
+        y_offset = dims[1]
+        w = dims[2]
+        h = dims[3]
+
+        margin = deg_90_dist
+        inner_width = w - (2 * deg_90_dist)
+
+        first_point_x = rr(x_offset + margin,  x_offset + margin + inner_width)
+        first_point_y = rr(y_offset,  y_offset + h)
+
+        second_point_x = first_point_x + deg_90_dist
+        second_point_y = first_point_y
+
+        pyautogui.moveTo(first_point_x, first_point_y,
+                         duration=r_mouse_duration())
+        pyautogui.dragTo(second_point_x, second_point_y,
+                         button='middle', duration=r_mouse_duration())
+
     '''
-    629, 65
-    649, 86
+    Runelite window margin = |85( game window )120|
+
+    So we can't click anywhere within the clients window....
     '''
+    # Pitch, plance moves up or down
 
-    x, y = rr(629, 649), rr(65, 86)
-    pyautogui.moveTo(x, y, duration=r_mouse_duration())
-    pyautogui.click()
+    def move_map_pitch(self, client, percentage: int):
+        '''
+        Params:
+            percentage: 1-100
 
+        338, 223
+        335, 36
 
-def move_map_deg(client, degs):
-    '''
-    352, 302
-    626, 296
+        w = client.dims[2]
+        h = client.dims[3]
+        rr(  )
 
-    w = client.doms[2]
-    h = client.doms[3]
-    rr(  )
+        y_dist = 10
+        (dims[0], dims[1])
+        ___________________________________
+        |   |        W                |   |
+        |   |  <-  h- 2 * y_dist ->   |   |
+        |   |                         |   |
+        |   |                         |   |
+        |   |                         |   |
+        |   |                         |   |
+        |   |                         |   |
+        -----------------------------------
 
-    deg_90_dist = 10
-    (dims[0], dims[1])
-    ___________________________________
-    |   |        W                |   |
-    |   |<-  w- 2 * deg_90_dist ->|   |
-    |   |                         |   |
-    |   |                         |   |
-    |   |                         |   |
-    |   |                         |   |
-    |   |                         |   |
-    -----------------------------------
+        90degress = delta x = +274  
+        '''
+        pitch_factor = 1.46
 
-    90degress = delta x = +274  N -> E      
-    '''
-    deg_to_x_factor = 2.92
+        y_dist = int(percentage * pitch_factor)
+        dims = client.dims
+        x_offset = dims[0]
+        y_offset = dims[1]
+        w = dims[2]
+        h = dims[3]
 
-    deg_90_dist = int(degs * deg_to_x_factor)
-    dims = client.dims
-    x_offset = dims[0]
-    y_offset = dims[1]
-    w = dims[2]
-    h = dims[3]
+        '''TODO()
+            Need to find bounds of clickable area. Black area on left and right of game window is non responsive 
+            
+        '''
 
-    margin = deg_90_dist
-    inner_width = w - (2 * deg_90_dist)
+        margin = y_dist
+        inner_height = h - (2 * y_dist)
 
-    first_point_x = rr(x_offset + margin,  x_offset + margin + inner_width)
-    first_point_y = rr(y_offset,  y_offset + h)
+        first_point_x = rr(x_offset,  x_offset + w)
+        first_point_y = rr(y_offset + margin,  y_offset +
+                           margin + inner_height)
 
-    second_point_x = first_point_x + deg_90_dist
-    second_point_y = first_point_y
+        second_point_x = first_point_x + int(gauss(5, 2))
+        second_point_y = first_point_y + y_dist
 
-    pyautogui.moveTo(first_point_x, first_point_y, duration=r_mouse_duration())
-    pyautogui.dragTo(second_point_x, second_point_y,
-                     button='middle', duration=r_mouse_duration())
-
-# Yaw, plane looks left and right
-
-
-def move_map_deg(client, degs):
-    '''
-    352, 302
-    626, 296
-
-    w = client.doms[2]
-    h = client.doms[3]
-    rr(  )
-
-    deg_90_dist = 10
-    (dims[0], dims[1])
-    ___________________________________
-    |   |        W                |   |
-    |   |<-  w- 2 * deg_90_dist ->|   |
-    |   |                         |   |
-    |   |                         |   |
-    |   |                         |   |
-    |   |                         |   |
-    |   |                         |   |
-    -----------------------------------
-
-    90degress = delta x = +274  N -> E      
-    '''
-    deg_to_x_factor = 2.92
-
-    deg_90_dist = int(degs * deg_to_x_factor)
-    dims = client.dims
-    x_offset = dims[0]
-    y_offset = dims[1]
-    w = dims[2]
-    h = dims[3]
-
-    margin = deg_90_dist
-    inner_width = w - (2 * deg_90_dist)
-
-    first_point_x = rr(x_offset + margin,  x_offset + inner_width)
-    first_point_y = rr(y_offset,  y_offset + h)
-
-    second_point_x = first_point_x + deg_90_dist
-    second_point_y = first_point_y
-
-    pyautogui.moveTo(first_point_x, first_point_y, duration=r_mouse_duration())
-    pyautogui.dragTo(second_point_x, second_point_y,
-                     button='middle', duration=r_mouse_duration())
-
-
-'''
-Runelite window margin = |85( game window )120|
-
-So we can't click anywhere within the clients window....
-'''
-
-# Pitch, plance moves up or down
-
-
-def move_map_pitch(client, percentage: int):
-    '''
-    Params:
-        percentage: 1-100
-
-    338, 223
-    335, 36
-
-    w = client.dims[2]
-    h = client.dims[3]
-    rr(  )
-
-    y_dist = 10
-    (dims[0], dims[1])
-    ___________________________________
-    |   |        W                |   |
-    |   |  <-  h- 2 * y_dist ->   |   |
-    |   |                         |   |
-    |   |                         |   |
-    |   |                         |   |
-    |   |                         |   |
-    |   |                         |   |
-    -----------------------------------
-
-    90degress = delta x = +274  
-    '''
-    pitch_factor = 1.46
-
-    y_dist = int(percentage * pitch_factor)
-    dims = client.dims
-    x_offset = dims[0]
-    y_offset = dims[1]
-    w = dims[2]
-    h = dims[3]
-
-    '''TODO()
-        Need to find bounds of clickable area. Black area on left and right of game window is non responsive 
-        
-    '''
-
-    margin = y_dist
-    inner_height = h - (2 * y_dist)
-
-    first_point_x = rr(x_offset,  x_offset + w)
-    first_point_y = rr(y_offset + margin,  y_offset + margin + inner_height)
-
-    second_point_x = first_point_x + int(gauss(5, 2))
-    second_point_y = first_point_y + y_dist
-
-    pyautogui.moveTo(first_point_x, first_point_y, duration=r_mouse_duration())
-    pyautogui.dragTo(second_point_x, second_point_y,
-                     button='middle', duration=r_mouse_duration())
+        pyautogui.moveTo(first_point_x, first_point_y,
+                         duration=r_mouse_duration())
+        pyautogui.dragTo(second_point_x, second_point_y,
+                         button='middle', duration=r_mouse_duration())
