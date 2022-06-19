@@ -1,5 +1,6 @@
 
 
+from cmath import sqrt
 from random import gauss
 import cv2
 from cv2 import sort
@@ -320,16 +321,40 @@ class Search:
         # cls.EMPTY_CHAT_HEAD = cls.EMPTY_CHAT_HEAD if cls.EMPTY_CHAT_HEAD is not None else cv2.imread(
         #     cls.EMPTY_CHAT_HEAD_PATH)
 
-        cur_avg = np.average(np.average(np.average(img, axis=0), axis=0))
-        # empty_avg = np.average(np.average(
-        #     np.average(cls.EMPTY_CHAT_HEAD, axis=0), axis=0))
-        empty_avg_left = 158.324889520202  # left
-        empty_avg_right = 165.99164054336464  # right
+        def dist(p1, p2): return sqrt(
+            (p2[0] - p1[0])**2 + (p2[1] - p1[1])**2 + (p2[2] - p1[1])**2)
+        pixels = np.float32(img.reshape(-1, 3))
 
-        empty_avg = empty_avg_left if left else empty_avg_right
-        delta = abs(empty_avg - cur_avg)
+        n_colors = 5
+        criteria = (cv2.TERM_CRITERIA_EPS +
+                    cv2.TERM_CRITERIA_MAX_ITER, 200, .1)
+        flags = cv2.KMEANS_RANDOM_CENTERS
+
+        _, labels, palette = cv2.kmeans(
+            pixels, n_colors, None, criteria, 10, flags)
+        _, counts = np.unique(labels, return_counts=True)
+
+        dominant = palette[np.argmax(counts)]
+        distance = dist([132.03435, 162.98283, 177.95706], dominant)
 
         print(
-            f"No chat head val: {np.average(empty_avg)},  Current val: {np.average(cur_avg)}, Delta: {delta}")
+            f"dominant color background: { [132.03435, 162.98283, 177.95706]}")
+        print(f"dominant color: {dominant}")
+        print(f"Dist: {distance}")
 
-        return delta > 9
+        '''
+            cur_avg = np.average(np.average(np.average(img, axis=0), axis=0))
+            # empty_avg = np.average(np.average(
+            #     np.average(cls.EMPTY_CHAT_HEAD, axis=0), axis=0))
+            empty_avg_left = 158.324889520202  # left
+            empty_avg_right = 165.99164054336464  # right
+
+            empty_avg = empty_avg_left if left else empty_avg_right
+            delta = abs(empty_avg - cur_avg)
+
+            print(
+                f"No chat head val: {np.average(empty_avg)},  Current val: {np.average(cur_avg)}, Delta: {delta}")
+        
+        '''
+
+        return distance > 7
