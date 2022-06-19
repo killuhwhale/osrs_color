@@ -49,3 +49,8 @@ class Colors(Enum):
         'hi': list([94, 255, 255]),
         'hex_target': 'FF00FFFF'
     }
+    LOGS_ON_FIRE = {
+        'low': list([21, 242, 59]),
+        'hi': list([25, 255, 97]),
+        'hex_target': '???'
+    }

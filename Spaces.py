@@ -7,7 +7,7 @@ import pyautogui
 
 from config import WINDOW_TOP_MARGIN
 from osrs import OsrsClient
-from utils import rr
+from utils import rr, Constant
 
 
 def grid(r, c, x, y, w, h, mx, my):
@@ -19,35 +19,6 @@ def grid(r, c, x, y, w, h, mx, my):
                            x + (col * mx) + w, y + (row * my) + h])
         ans.append(column)
     return ans
-
-
-class Constant:
-    def __init__(self, value):
-        self.value = value
-
-    def __get__(self, *args):
-        return self.value
-
-    def __repr__(self):
-        return f'{self.__class__.__name__}({self.value})'
-
-    def __add__(self, other):
-        return int(self.value) + other
-
-    def __radd__(self, other):
-        return int(self.value) + other
-
-    def __sub__(self, other):
-        return int(self.value) - other
-
-    def __rsub__(self, other):
-        return other - int(self.value)
-
-    def __mul__(self, other):
-        return int(self.value) * other
-
-    def __rmul__(self, other):
-        return int(self.value) * other
 
 
 class Spaces:
@@ -268,6 +239,17 @@ class Spaces:
     GEAR_DEATH_CLOSE = 208
     CHAT_HEAD = 209
     CHAT_HEAD_RIGHT = 210
+
+    PLAYER_CENTER_SM = 211
+    PLAYER_CENTER_MED = 212
+    PLAYER_CENTER_LG = 213
+
+    TUT_ISLAND_MINI_MAP_FISH_SPOT = 214
+
+    NORTH = 215
+    EAST = 216
+    SOUTH = 217
+    WEST = 218
 
     ''' Skill Spaces
         15x12
@@ -543,6 +525,18 @@ class Spaces:
 
         CHAT_HEAD: [40, 365, 88, 453],  # 48 x 88
         CHAT_HEAD_RIGHT: [425, 365, 483, 453],  # 48 x 88
+
+        PLAYER_CENTER_SM: [215, 130, 372, 202],
+        PLAYER_CENTER_MED: [180, 100, 420, 240],
+        PLAYER_CENTER_LG: [16, 70, 504, 302],
+
+        TUT_ISLAND_MINI_MAP_FISH_SPOT: [692, 121, 711, 145],
+
+        NORTH: [26, 39, 484, 176],
+        EAST: [263, 39, 492, 307],
+        SOUTH: [14, 184, 492, 307],
+        WEST: [26, 39,  231, 307],
+
 
     }
 

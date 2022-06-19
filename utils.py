@@ -1,7 +1,7 @@
 from random import gauss, randrange
 from subprocess import Popen, PIPE, run
 from time import sleep
-
+import pyautogui
 from enum import Enum
 
 
@@ -54,11 +54,39 @@ def r_mouse_duration(dur=None):
         return gauss(0.6, 0.175)
 
 
-class Map:
-    def __init__(self):
-        pass
+class Constant:
+    def __init__(self, value):
+        self.value = value
 
-    def reset_map(self, client):
+    def __get__(self, *args):
+        return self.value
+
+    def __repr__(self):
+        return f'{self.__class__.__name__}({self.value})'
+
+    def __add__(self, other):
+        return int(self.value) + other
+
+    def __radd__(self, other):
+        return int(self.value) + other
+
+    def __sub__(self, other):
+        return int(self.value) - other
+
+    def __rsub__(self, other):
+        return other - int(self.value)
+
+    def __mul__(self, other):
+        return int(self.value) * other
+
+    def __rmul__(self, other):
+        return int(self.value) * other
+
+
+class Map:
+
+    @classmethod
+    def reset_map(cls, client):
         '''
         629, 65
         649, 86
@@ -68,7 +96,8 @@ class Map:
         pyautogui.moveTo(x, y, duration=r_mouse_duration())
         pyautogui.click()
 
-    def move_map_deg(self, client, degs):
+    @classmethod
+    def move_map_deg(cls, client, degs):
         '''
         352, 302
         626, 296
@@ -91,14 +120,15 @@ class Map:
 
         90degress = delta x = +274  N -> E      
         '''
+        print("Moving map degs: ", degs)
         deg_to_x_factor = 2.92
 
         deg_90_dist = int(degs * deg_to_x_factor)
         dims = client.dims
-        x_offset = dims[0]
-        y_offset = dims[1]
-        w = dims[2]
-        h = dims[3]
+        x_offset = dims[0] + 50
+        y_offset = dims[1] + 50
+        w = dims[2] - 300
+        h = dims[3] - 200
 
         margin = deg_90_dist
         inner_width = w - (2 * deg_90_dist)
@@ -120,8 +150,8 @@ class Map:
     So we can't click anywhere within the clients window....
     '''
     # Pitch, plance moves up or down
-
-    def move_map_pitch(self, client, percentage: int):
+    @classmethod
+    def move_map_pitch(cls, client, percentage: int):
         '''
         Params:
             percentage: 1-100

@@ -7,6 +7,7 @@ from Spaces import Spaces
 from Search import Search
 from Items import Items
 from cookbooks import cookbook_template
+from PyKey import PyKey
 
 ACCOUNTS = [
     ['thisiscrazy@really.net', 'qpwoei1337'],
@@ -79,6 +80,7 @@ class BotLoop:
         # print(f'Checking if {i} isReady')
 
         if self._sleeps[i].is_ready():
+            print(f"Running step: {step}")
             recipie['fns'][step](client)  # Do the step for the client
             self._steps[i] += 1  # Update the clients current step.
             # Update the sleep time, call lambda function to generate random sleep val
@@ -86,7 +88,7 @@ class BotLoop:
             self._sleeps[i].set(time(), recipie['sleeps'][step](is_running))
 
         # End of recipie reached
-        if step == len(recipie['fns']) - 1:
+        if step == len(recipie['fns']):
             self._steps[i] = 0  # Update the clients current step.
             # chance to add client to stopped_clients
             if user_input == "stop":
@@ -109,6 +111,7 @@ class BotLoop:
                 if i in self._stopped_clients:
                     continue
 
+                self.cook_from_book(client, i, user_input)
                 # res = Search.search_intf_image_to_num(
                 #     client, Spaces.INTF_RUN)
                 # print(f"Hp: {res}")
@@ -122,8 +125,8 @@ class BotLoop:
                 # Search.click(Search.click_interface(
                 #     client, Spaces.SKILL_ATT))
 
-                Search.click(Search.search_space_color(
-                    client, Spaces.N_A, Colors.NPC_PURPLE))
+                # Search.click(Search.search_space_color(
+                #     client, Spaces.PLAYER_CENTER_SM, Colors.NPC_PURPLE))
 
                 # print(Search.chat_head_showing(client, left=True))
 

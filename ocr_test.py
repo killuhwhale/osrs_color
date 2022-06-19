@@ -216,8 +216,8 @@ def imshow(img: Image):
 
 
 def take_ss_of_item():
-    RUNE_SHOT = True
-    CITEM = Items.GOLD_BAR
+    RUNE_SHOT = False
+    CITEM = Items.TINDERBOX
     while True:
         if RUNE_SHOT:
             img, x, y = Spaces._crop_screen_pos(
@@ -243,4 +243,4 @@ def avg_color():
 
 
 if __name__ == "__main__":
-    avg_color()
+    take_ss_of_item()

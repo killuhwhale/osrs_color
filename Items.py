@@ -33,6 +33,10 @@ class Items(Enum):
     STAFF_OF_FIRE = {"n": "STAFF_OF_FIRE", "conf": 0.80, "grayscale": False}
     SWORDFISH = {"n": "SWORDFISH", "conf": 0.80, "grayscale": False}
 
+    RAW_SHRIMP = {"n": "RAW_SHRIMP", "conf": 0.80, "grayscale": False}
+    LOGS = {"n": "LOGS", "conf": 0.80, "grayscale": False}
+    TINDERBOX = {"n": "TINDERBOX", "conf": 0.80, "grayscale": False}
+
     BRONZE_BAR = {"n": "BRONZE_BAR", "conf": 0.80, "grayscale": False}
     BLURITE_BAR = {"n": "BLURITE_BAR", "conf": 0.80, "grayscale": False}
     IRON_BAR = {"n": "IRON_BAR", "conf": 0.80, "grayscale": False}

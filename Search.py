@@ -233,6 +233,11 @@ class Search:
 
         print("Low/ high")
         print(color_low, color_high)
+        # cv2.imshow('img', img)
+        # cv2.moveWindow('img', 1000, 0)
+        # cv2.waitKey(0)
+        # cv2.destroyAllWindows()
+
         # Threshold the HSV image to get only red colors
         mask = cv2.inRange(hsv, color_low, color_high)
 
@@ -242,6 +247,7 @@ class Search:
             mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
         if len(contours) == 0:
+            print("No contours found")
             return None
 
         contours = sorted(contours, key=lambda c: cv2.contourArea(c))
@@ -249,7 +255,8 @@ class Search:
         largest_contour_area = cv2.contourArea(largest_contour)
         # print(f"Coutour size: {largest_contour_area}")
 
-        if largest_contour_area <= 49.0:
+        if largest_contour_area <= 19.0:
+            print(f"Contour too small {largest_contour_area}")
             return None
 
         bounds = cv2.boundingRect(largest_contour)
@@ -325,4 +332,4 @@ class Search:
         print(
             f"No chat head val: {np.average(empty_avg)},  Current val: {np.average(cur_avg)}, Delta: {delta}")
 
-        return delta > 15
+        return delta > 9

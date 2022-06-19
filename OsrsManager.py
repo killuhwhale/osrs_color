@@ -71,9 +71,21 @@ class OsrsManager:
         if not DEBUG:
             for i in range(self._num_clients):
                 cmd = f'java -jar ./RuneLite.jar'
-                # ssh -D 13377  chrisandaya@34.121.188.5 -i ~/.ssh/google_compute_engine
-                # java -DsocksProxyHost=127.0.0.1 -DsocksProxyPort=13377 -jar runelite.jar
-                # cmd = f'java -DsocksProxyHost={SOCKS_HOST} -DsocksProxyPort={SOCKS_PORT} -jar runelite.jar'
+                ''' 
+                cmd = f'java -DsocksProxyHost={SOCKS_HOST} -DsocksProxyPort={SOCKS_PORT} -jar runelite.jar'
+
+                Plugin:
+                    Search response in custom ammo plugin target=".your-ip"
+                    /Users/chrisandaya/IdeaProjects/runelite/runelite-client/target/client-1.8.25-SNAPSHOT-shaded.jar
+                    CMD to launch Runelite w/ plugin: /Library/Java/JavaVirtualMachines/adoptopenjdk-8.jdk/Contents/Home/bin/java -DsocksProxyHost=127.0.0.1 -DsocksProxyPort=13377 -jar client-1.8.25-SNAPSHOT-shaded.jar
+                
+                Regular
+                    java -DsocksProxyHost=127.0.0.1 -DsocksProxyPort=13377 -jar runelite.jar
+                
+                    Start Proxy server
+                    ssh -D 13377  chrisandaya@34.121.188.5 -i ~/.ssh/google_compute_engine
+                '''
+
                 run_cmd(cmd)
 
         print("Waiting for clients to load")
