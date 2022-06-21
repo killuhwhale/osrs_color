@@ -50,7 +50,7 @@ class MousePOS:
 
         x, y = pyautogui.position()
         print(
-            f'abs coords {int(x)}, {int(y - SCREEN_TOP_MARGIN - WINDOW_TOP_MARGIN)}  Reg:  {int(x)}, {int(y)}')
+            f'Relative coords {int(x)}, {int(y - SCREEN_TOP_MARGIN - WINDOW_TOP_MARGIN)}')
 
         if key == keyboard.Key.esc:
             # Stop listener

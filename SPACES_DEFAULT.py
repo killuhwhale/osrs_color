@@ -245,6 +245,10 @@ class DEFAULT_SPACES:
     SOUTH = 217
     WEST = 218
 
+    RESET_MAP = 219
+    CLICK_HERE_TO_CONTINUE = 220
+    CLOSE_BANK = 221
+
    # Example of how to use grid. Manually find each var and plug in to the grid() method.
     SKILL_WIDTH = Constant(50)
     SKILL_HEIGHT = Constant(20)
@@ -516,6 +520,10 @@ class DEFAULT_SPACES:
         EAST: [263, 39, 492, 307],
         SOUTH: [14, 184, 492, 307],
         WEST: [26, 39,  231, 307],
+        RESET_MAP: [546, 4, 574, 32],
+
+        CLICK_HERE_TO_CONTINUE: [21, 440, 496, 453],
+        CLOSE_BANK: [482, 17, 491, 28],
 
 
     }

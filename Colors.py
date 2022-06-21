@@ -54,3 +54,13 @@ class Colors(Enum):
         'hi': list([25, 255, 97]),
         'hex_target': '???'
     }
+    GIANT_RAT = {
+        'low': list([26, 14, 93]),
+        'hi': list([165, 18, 165]),
+        'hex_target': '???'
+    }
+    CHICKEN_TUT_ISLAND = {
+        'low': list([17, 68, 121]),
+        'hi': list([21, 76, 255]),
+        'hex_target': '???'
+    }

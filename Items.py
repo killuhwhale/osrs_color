@@ -36,6 +36,17 @@ class Items(Enum):
     RAW_SHRIMP = {"n": "RAW_SHRIMP", "conf": 0.80, "grayscale": False}
     LOGS = {"n": "LOGS", "conf": 0.80, "grayscale": False}
     TINDERBOX = {"n": "TINDERBOX", "conf": 0.80, "grayscale": False}
+    POT_OF_FLOUR = {"n": "POT_OF_FLOUR", "conf": 0.80, "grayscale": False}
+    BUCKET_OF_WATER = {"n": "BUCKET_OF_WATER",
+                       "conf": 0.80, "grayscale": False}
+    BREAD_DOUGH = {"n": "BREAD_DOUGH",
+                   "conf": 0.80, "grayscale": False}
+
+    BRONZE_DAGGER = {"n": "BRONZE_DAGGER", "conf": 0.80, "grayscale": False}
+    BRONZE_SWORD = {"n": "BRONZE_SWORD", "conf": 0.80, "grayscale": False}
+    WOODEN_SHIELD = {"n": "WOODEN_SHIELD", "conf": 0.80, "grayscale": False}
+    BRONZE_ARROWS = {"n": "BRONZE_ARROWS", "conf": 0.80, "grayscale": False}
+    SHORTBOW = {"n": "SHORTBOW", "conf": 0.80, "grayscale": False}
 
     BRONZE_BAR = {"n": "BRONZE_BAR", "conf": 0.80, "grayscale": False}
     BLURITE_BAR = {"n": "BLURITE_BAR", "conf": 0.80, "grayscale": False}

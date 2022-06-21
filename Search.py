@@ -1,6 +1,6 @@
 
 
-from cmath import sqrt
+from math import sqrt
 from random import gauss
 import cv2
 from cv2 import sort
@@ -95,12 +95,24 @@ class Search:
     @classmethod
     def click_interface(cls, client: OsrsClient, space: Spaces) -> int:
         '''
-            Given a skillSpace, return current skill lvl
-            Probably not very useful honestly, just need to know where to click on skill....
-            If we want to know the lvls we can probabably do an http request.
+            Given a Space, return a random coordinate within its bounds.
         '''
         bounds = Spaces.get_bounds(
             client, space)  # Bounds are already adjusted
+
+        bounds = cls._pad_bounds(bounds)
+        return cls._random_bound(bounds)
+
+    @classmethod
+    def click_interface_from_raw_coords(cls, client: OsrsClient, raw_space: list) -> int:
+        '''
+            Given a a list of coords
+            Probably not very useful honestly, just need to know where to click on skill....
+            If we want to know the lvls we can probabably do an http request.
+        '''
+        print(f"client/raw_space: {client}/{raw_space}")
+        bounds = Spaces.get_bounds_from_raw_coords(
+            client, raw_space)  # Bounds are already adjusted
 
         bounds = cls._pad_bounds(bounds)
         return cls._random_bound(bounds)
@@ -357,4 +369,4 @@ class Search:
         
         '''
 
-        return distance > 7
+        return distance > 17.0

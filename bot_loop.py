@@ -77,22 +77,26 @@ class BotLoop:
     def cook_from_book(self, client, i, user_input=""):
         recipie = self._cookbook[i]  # Get recipie from cookbook for client
         step = self._steps[i]
-        # print(f'Checking if {i} isReady')
 
+        # End of recipie reached
+        if step == len(recipie['fns']):
+            self._steps[i] = 0
+            step = 0
+
+            if user_input == "stop":
+                self._stopped_clients.append(i)
+                return
+
+        # print(f'Checking if {i} isReady')
         if self._sleeps[i].is_ready():
-            print(f"Running step: {step}")
+            print(f"\nRunning step: {step}\n")
             recipie['fns'][step](client)  # Do the step for the client
             self._steps[i] += 1  # Update the clients current step.
             # Update the sleep time, call lambda function to generate random sleep val
             is_running = True
             self._sleeps[i].set(time(), recipie['sleeps'][step](is_running))
-
-        # End of recipie reached
-        if step == len(recipie['fns']):
-            self._steps[i] = 0  # Update the clients current step.
-            # chance to add client to stopped_clients
-            if user_input == "stop":
-                self._stopped_clients.append(i)
+        else:
+            print(f"\Sleeping on step: {step}\n")
 
     def _run(self):
         user_input = ''

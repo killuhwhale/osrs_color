@@ -23,6 +23,12 @@ tesseract_=?
 
 
 '''
+
+
+class CLIENT:
+    dims = [0, 25, 765, 535]
+
+
 CLIENT_DIMS = [0, 25, 765, 535]
 
 
@@ -216,15 +222,16 @@ def imshow(img: Image):
 
 
 def take_ss_of_item():
-    RUNE_SHOT = False
-    CITEM = Items.TINDERBOX
+    RUNE_SHOT = True
+    CITEM = Items.BRONZE_ARROWS
+
     while True:
         if RUNE_SHOT:
             img, x, y = Spaces._crop_screen_pos(
-                CLIENT_DIMS, 565, 220, 590, 237, f"needles/items/{CITEM}.png")
+                CLIENT(), [565, 220, 590, 237], f"needles/items/{CITEM}.png")
         else:
             img, x, y = Spaces._crop_screen_pos(
-                CLIENT_DIMS, 560, 210, 595, 245, f"needles/items/{CITEM}.png")
+                CLIENT(), [560, 210, 595, 245], f"needles/items/{CITEM}.png")
 
         imshow(img)
 

@@ -96,7 +96,7 @@ cv.createTrackbar(high_V_name, window_detection_name, high_V,
                   max_value, on_high_V_thresh_trackbar)
 
 
-img = cv.imread("fire_test.png")
+img = cv.imread("rat_color.png")
 
 
 old_low_H = low_H
