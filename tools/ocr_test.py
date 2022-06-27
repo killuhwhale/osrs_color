@@ -3,6 +3,7 @@ import cv2
 from cv2 import cvtColor
 from Search import Items
 from Spaces import Spaces
+from VerifySpace import VerifySpace
 import pytesseract
 import numpy as np
 import pyautogui
@@ -222,18 +223,26 @@ def imshow(img: Image):
 
 
 def take_ss_of_item():
-    RUNE_SHOT = True
-    CITEM = Items.BRONZE_ARROWS
-
+    RUNE_SHOT = False
+    # CITEM = Items.SILVER_ORE
+    CITEM = VerifySpace.CONTINUE
+    img_type = "spaces"
+    FIXED_INV_SLOT = False
     while True:
-        if RUNE_SHOT:
-            img, x, y = Spaces._crop_screen_pos(
-                CLIENT(), [565, 220, 590, 237], f"needles/items/{CITEM}.png")
+        img = None
+        if FIXED_INV_SLOT:
+            if RUNE_SHOT:
+                img, x, y = Spaces._crop_screen_pos(
+                    CLIENT(), [565, 220, 590, 237], f"needles/{img_type}/{CITEM}.png")
+            else:
+                img, x, y = Spaces._crop_screen_pos(
+                    CLIENT(), [560, 210, 595, 245], f"needles/{img_type}/{CITEM}.png")
         else:
             img, x, y = Spaces._crop_screen_pos(
-                CLIENT(), [560, 210, 595, 245], f"needles/items/{CITEM}.png")
+                CLIENT(), Spaces.SPACES[CITEM.value["pos"]], f"needles/{img_type}/{CITEM}.png")
 
-        imshow(img)
+        if img:
+            imshow(img)
 
 
 def avg_color():

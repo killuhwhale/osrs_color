@@ -247,7 +247,40 @@ class DEFAULT_SPACES:
 
     RESET_MAP = 219
     CLICK_HERE_TO_CONTINUE = 220
+
+    SMELT_BAR_BRONZE = 223
+    SMELT_BAR_IRON = 224
+    SMELT_BAR_SILVER = 225
+    SMELT_BAR_STEEL = 226
+    SMELT_BAR_GOLD = 227
+    SMELT_BAR_MITH = 228
+    SMELT_BAR_ADAM = 229
+    SMELT_BAR_RUNE = 230
+
     CLOSE_BANK = 221
+    BANK_DEPOSIT_INV = 222
+    BANK_TAB_ALL = 231
+    BANK_TAB_1 = 232
+    BANK_TAB_2 = 233
+    BANK_TAB_3 = 234
+    BANK_TAB_4 = 235
+    BANK_TAB_5 = 236
+    BANK_TAB_6 = 237
+    BANK_TAB_7 = 238
+    BANK_TAB_8 = 239
+    BANK_TAB_9 = 240
+
+    BANK_DEPOSIT_WORN_ITEMS = 241
+    GE_HISTORY = 242
+    CONTINUE = 243
+
+    '''
+    
+    
+    
+    
+        Coords
+    '''
 
    # Example of how to use grid. Manually find each var and plug in to the grid() method.
     SKILL_WIDTH = Constant(50)
@@ -258,15 +291,11 @@ class DEFAULT_SPACES:
     SK_HZ_MG = Constant(64)
     skills_grid = grid(8, 3, BASE_SKILL_X, BASE_SKILL_Y,
                        SKILL_WIDTH, SKILL_HEIGHT, SK_HZ_MG, SK_VT_MG)
-
     # Panels inv, prayer, magic, etc...
     panels_top_grid = grid(1, 7, 530, 176, 32, 20, 32, 1)
     panels_bottom_grid = grid(1, 7, 530, 473, 32, 20, 32, 1)
-
     prayer_grid = grid(6, 5, 551, 212, 33, 33, 37, 37)
-
     magic_grid = grid(10, 7, 552, 203, 23, 23, 26, 24)
-
     # Combat spells from combat menu (when staff equipped)
     combat_spells_grid = grid(5, 4, 570, 216,  23, 23, 41, 31)
 
@@ -524,6 +553,32 @@ class DEFAULT_SPACES:
 
         CLICK_HERE_TO_CONTINUE: [21, 440, 496, 453],
         CLOSE_BANK: [482, 17, 491, 28],
+        BANK_DEPOSIT_INV: [431, 300, 455, 326],
+
+        SMELT_BAR_BRONZE: [22, 397, 65, 453],
+        SMELT_BAR_IRON: [87, 397, 125, 452],
+        SMELT_BAR_SILVER: [146, 396, 191, 454],
+        SMELT_BAR_STEEL: [210, 396, 252, 455],
+        SMELT_BAR_GOLD: [279, 408, 313, 451],
+        SMELT_BAR_MITH: [351, 433, 377, 443],
+        SMELT_BAR_ADAM: [408, 411, 437, 452],
+        SMELT_BAR_RUNE: [466, 421, 498, 452],
+
+        BANK_TAB_ALL: [75, 54, 96, 68, ],
+        BANK_TAB_1: [114, 56, 133, 63, ],
+        BANK_TAB_2: [165, 63, 180, 65, ],
+        BANK_TAB_3: [194, 57, 213, 68, ],
+        BANK_TAB_4: [229, 47, 254, 72, ],
+        BANK_TAB_5: [268, 50, 302, 62, ],
+        BANK_TAB_6: [308, 48, 338, 66, ],
+        BANK_TAB_7: [347, 46, 372, 69, ],
+        BANK_TAB_8: [402, 66, 410, 69, ],
+        BANK_TAB_9: [447, 72, 452, 69, ],
+
+        BANK_DEPOSIT_WORN_ITEMS: [472, 301, 493, 328],
+        GE_HISTORY: [25, 26, 74, 46],
+        CONTINUE: [115, 430, 464, 458],
+
 
 
     }

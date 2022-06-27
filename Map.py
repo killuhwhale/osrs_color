@@ -30,6 +30,10 @@ class Map:
         |   |                         |   |
         -----------------------------------
 
+            Pretty BROKEN, lets just use Spaces.PLAYER_MED as a starting point,
+            draw from there to whereever......
+
+
         90degress = delta x = +274  N -> E      
         '''
         print("Moving map degs: ", degs)
@@ -42,7 +46,7 @@ class Map:
         w = dims[2] - 300
         h = dims[3] - 200
 
-        margin = deg_90_dist
+        margin = abs(deg_90_dist)
         inner_width = w - (2 * deg_90_dist)
 
         first_point_x = rr(x_offset + margin,  x_offset + margin + inner_width)

@@ -1,4 +1,5 @@
 from enum import Enum, unique
+from random import shuffle
 
 
 @unique
@@ -47,6 +48,9 @@ class Items(Enum):
     WOODEN_SHIELD = {"n": "WOODEN_SHIELD", "conf": 0.80, "grayscale": False}
     BRONZE_ARROWS = {"n": "BRONZE_ARROWS", "conf": 0.80, "grayscale": False}
     SHORTBOW = {"n": "SHORTBOW", "conf": 0.80, "grayscale": False}
+    TIN_ORE = {"n": "TIN_ORE", "conf": 0.98, "grayscale": False}
+    COPPER_ORE = {"n": "COPPER_ORE", "conf": 0.98, "grayscale": False}
+    SILVER_ORE = {"n": "SILVER_ORE", "conf": 0.98, "grayscale": False}
 
     BRONZE_BAR = {"n": "BRONZE_BAR", "conf": 0.80, "grayscale": False}
     BLURITE_BAR = {"n": "BLURITE_BAR", "conf": 0.80, "grayscale": False}
@@ -100,3 +104,10 @@ class Items(Enum):
 
     def __str__(self):
         return self.name
+
+    @classmethod
+    def shuffle_index(cls, n):
+        # Randomize items to withdraw
+        l = list(range(n))
+        shuffle(l)
+        return l

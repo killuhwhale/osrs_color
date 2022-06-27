@@ -10,9 +10,11 @@ import pyautogui
 from time import sleep
 from Colors import Colors
 from Items import Items
+from typing import Tuple, List
 
-from osrs import OsrsClient
+from OsrsClient import OsrsClient
 from Spaces import Spaces
+from VerifySpace import VerifySpace
 from utils import rr
 
 
@@ -100,11 +102,18 @@ class Search:
         bounds = Spaces.get_bounds(
             client, space)  # Bounds are already adjusted
 
-        bounds = cls._pad_bounds(bounds)
+        # increase bounds on magic spells
+        # 93 - 162
+        print(space > 0)
+        if 93 <= space <= 162:
+            bounds = cls._pad_bounds(bounds, padding=6)
+        else:
+            bounds = cls._pad_bounds(bounds)
+
         return cls._random_bound(bounds)
 
     @classmethod
-    def click_interface_from_raw_coords(cls, client: OsrsClient, raw_space: list) -> int:
+    def click_interface_from_raw_coords(cls, client: OsrsClient, raw_space: List) -> int:
         '''
             Given a a list of coords
             Probably not very useful honestly, just need to know where to click on skill....
@@ -118,11 +127,39 @@ class Search:
         return cls._random_bound(bounds)
 
     @classmethod
-    def search_space_item(cls, client: OsrsClient, space: Spaces, item: Items, grayscale=False, confidence=0.69) -> (tuple[int, int] or None):
+    def search_space_multi_item(cls, client: OsrsClient, space: Spaces, items: List[Items], grayscale=False, confidence=0.69) -> (list):
+        '''
+            Search a space for an multiple items, returns a list of their click points or None if the item is not found.
+            e.g. [(x,y), None, (x1,y1)]
+        '''
+        search_space, x_offset, y_offset = Spaces.get_space(client, space)
+        image_data = (search_space, x_offset, y_offset,)
+        ans = []
+        for item in items:
+            ans.append(cls._search_space_item(client, space,
+                       item, grayscale, confidence, image_data))
+
+        return ans
+
+    @classmethod
+    def search_space_item(cls, client: OsrsClient, space: Spaces, item: Items, grayscale=False, confidence=0.69) -> (Tuple[int, int] or None):
         '''
             Search a space for an item
         '''
-        search_space, x_offset, y_offset = Spaces.get_space(client, space)
+        return cls._search_space_item(client, space, item, grayscale, confidence)
+
+    @classmethod
+    def _search_space_item(cls, client: OsrsClient, space: Spaces, item: Items, grayscale=False, confidence=0.69, image_data: Tuple[Image.Image, int, int] = None) -> (Tuple[int, int] or None):
+        '''
+            Search a space for an item
+        '''
+        search_space, x_offset, y_offset = None, 0, 0
+
+        if image_data is None:
+            search_space, x_offset, y_offset = Spaces.get_space(client, space)
+        else:
+            search_space, x_offset, y_offset = image_data
+
         needle = cls._load_img(f"items/{str(item)}.png")
         # imshow(needle)
 
@@ -131,7 +168,7 @@ class Search:
 
         # 4-integer tuple: (left, top, width, height)
         bounds = pyautogui.locate(
-            needle, search_space, grayscale=grayscale, confidence=confidence)
+            needle, search_space, grayscale=item.value['grayscale'], confidence=item.value['conf'])
         if bounds is None:
             # retries = 5  TODO() Change back
             retries = 0
@@ -151,7 +188,7 @@ class Search:
         return cls._random_bound(bounds)
 
     @classmethod
-    def search_space_color(cls, client: OsrsClient, space: Spaces, color: Colors, grayscale=True, confidence=0.69) -> (tuple[int, int] or None):
+    def search_space_color(cls, client: OsrsClient, space: Spaces, color: Colors, grayscale=True, confidence=0.69, padding=2) -> (Tuple[int, int] or None):
         '''
             Search a space for an item
         '''
@@ -161,15 +198,25 @@ class Search:
         # 4-integer tuple: (left, top, width, height)
         # Offset from image
         pt = cls._locate_color(
-            np.array(color.value['low']), np.array(color.value['hi']), search_space, grayscale, confidence)
+            np.array(color.value['low']), np.array(color.value['hi']), search_space, grayscale, confidence, padding)
 
         if pt is None:
             return None
-        # bounds = cls._adjust_locate_bounds(bounds, x_offset, y_offset)  #
+
         x, y = pt[0] + x_offset, pt[1] + y_offset
-        # bounds = cls._pad_bounds(bounds, padding=10)
-        # return cls._random_bound(bounds)
         return (x, y)
+
+    @classmethod
+    def verify_space(cls, client: OsrsClient, v_space: VerifySpace) -> bool:
+        needle = cls._load_img(f"spaces/{str(v_space)}.png")
+
+        # VerifySpace references Spaces Object for its position.
+        search_space, x_offset, y_offset = Spaces._crop_screen_pos(
+            client, Spaces.SPACES[v_space.value["pos"]])
+        # imshow(search_space)
+        bounds = pyautogui.locate(
+            needle, search_space, grayscale=v_space.value['grayscale'], confidence=v_space.value['conf'])
+        return bounds is not None
 
     @classmethod
     def click(cls, pt=None):
@@ -182,7 +229,7 @@ class Search:
         pyautogui.click()
 
     @classmethod
-    def _adjust_locate_bounds(cls, bounds: tuple, x_offset: int, y_offset: int) -> tuple[int, int, int, int]:
+    def _adjust_locate_bounds(cls, bounds: tuple, x_offset: int, y_offset: int) -> Tuple[int, int, int, int]:
         ''' Adjusts the bounds of the item found in image to where it is on screen.
             Bounds of the item in the image or relative to the image's top left corner @ x = 0, y = 0
             The image is taken as a screenshot at a specific x y offset.
@@ -200,7 +247,7 @@ class Search:
         return (x_left, y_top, width, height)
 
     @classmethod
-    def _random_bound(cls, bounds: tuple) -> tuple[int, int]:
+    def _random_bound(cls, bounds: tuple) -> Tuple[int, int]:
         '''
             Given adjust bounds for a client, pick a random point.
         '''
@@ -238,14 +285,14 @@ class Search:
         return Image.fromarray(mask)
 
     @classmethod
-    def _locate_color(cls, color_low: list, color_high: list, search_space: Image, grayscale: bool, confidence: float) -> tuple[int, int]:
+    def _locate_color(cls, color_low: list, color_high: list, search_space: Image, grayscale: bool, confidence: float, padding: int) -> Tuple[int, int]:
 
         # Convert Space to HSV color space
         img = np.asarray(search_space)
         hsv = cv2.cvtColor(img, cv2.COLOR_RGB2HSV)
 
-        print("Low/ high")
-        print(color_low, color_high)
+        # print("Low/ high")
+        # print(color_low, color_high)
         # cv2.imshow('img', img)
         # cv2.moveWindow('img', 1000, 0)
         # cv2.waitKey(0)
@@ -275,8 +322,9 @@ class Search:
         bounds = cv2.boundingRect(largest_contour)
 
         # Bounds includes more points than we want.
-
         # Lets pick a point in bounds
+        bounds = cls._pad_bounds(bounds, padding=padding)
+
         pt = cls._random_bound(bounds)
         # Lets check if its in the contour still
         test_res = cv2.pointPolygonTest(largest_contour, pt, False)
@@ -286,8 +334,9 @@ class Search:
             test_res = cv2.pointPolygonTest(largest_contour, pt, True)
             retries -= 1
 
+        ''' DEBUG
+        '''
         # print(f"Picked pt: {pt} and the test result is: {test_res}")
-
         # Draw and show contours
         # boximg = cv2.drawContours(img, contours, -1, (0, 255, 0), 3)
         # x, y, w, h = bounds
@@ -316,7 +365,7 @@ class Search:
         return img
 
     @classmethod
-    def _pad_bounds(cls, bounds, padding=3) -> tuple[int, int, int, int]:
+    def _pad_bounds(cls, bounds, padding=3) -> Tuple[int, int, int, int]:
         '''
             Adds padding to the bound so no clicks will happen on the border which may cause a misclick.
         '''

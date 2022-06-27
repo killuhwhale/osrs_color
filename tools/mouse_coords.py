@@ -49,8 +49,9 @@ class MousePOS:
             pyautogui.move(-1, 0)
 
         x, y = pyautogui.position()
+        # print("Relative Coords")
         print(
-            f'Relative coords {int(x)}, {int(y - SCREEN_TOP_MARGIN - WINDOW_TOP_MARGIN)}')
+            f'{int(x)}, {int(y - SCREEN_TOP_MARGIN - WINDOW_TOP_MARGIN)},')
 
         if key == keyboard.Key.esc:
             # Stop listener

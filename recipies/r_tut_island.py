@@ -1,12 +1,14 @@
 from random import gauss
 from time import sleep
 from utils import rr
-from Map import Map
-from Spaces import Spaces
-from Search import Search
-from Items import Items
+
 from Colors import Colors
+from Items import Items
+from Map import Map
 from PyKey import PyKey
+from Search import Search
+from Spaces import Spaces
+
 
 '''  The client has a pos_x and pos_y indicating the top left corner  
 

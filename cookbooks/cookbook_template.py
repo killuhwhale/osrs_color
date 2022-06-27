@@ -6,7 +6,7 @@ from recipies import r_test_recipie, r_tut_island
 '''
 
 
-COOKBOOK_TEMPLATE = [
+COOKBOOK = [
     r_tut_island.RECIPIE,
     # r_make_cbs.RECIPIE,   # Client 1 recipie
     # r_tut_island.RECIPIE  # Client 2 recipie

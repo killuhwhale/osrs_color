@@ -6,8 +6,10 @@ from Colors import Colors
 from Spaces import Spaces
 from Search import Search
 from Items import Items
-from cookbooks import cookbook_template
+from cookbooks import cookbook_template, smithing_cookbook
 from PyKey import PyKey
+
+from recipies.EdgeFurnace import EdgeFurnace
 
 ACCOUNTS = [
     ['thisiscrazy@really.net', 'qpwoei1337'],
@@ -18,7 +20,7 @@ ACCOUNTS = [
 
 ''' The main bot loop.
 
-The loop will run until stopped. 
+The loop will run until stopped.
 The loop will execute a step and sleep from a recipie for each client.
 
 
@@ -32,17 +34,19 @@ The loop will execute a step and sleep from a recipie for each client.
 '''
 
 
-class SleepCycle:
-    def __init__(self):
-        self.start = 0.0
-        self.dur = 0.0
+# class SleepCycle:
+#     def __init__(self):
+#         self.start = 0.0
+#         self.dur = 0.0
 
-    def set(self, start, dur):
-        self.start = start
-        self.dur = dur
+#     def set(self, start, dur):
+#         self.start = start
+#         self.dur = dur
 
-    def is_ready(self):
-        return time() - self.start >= self.dur
+#     def is_ready(self):
+#         return time() - self.start >= self.dur
+
+_COOKBOOK = smithing_cookbook.COOKBOOK
 
 
 class BotLoop:
@@ -53,12 +57,37 @@ class BotLoop:
         self.DEBUG = DEBUG
         self._stopped_clients = []
         # each client will update this with how long they need to sleep for
-        self._sleeps = defaultdict(SleepCycle)
-        self._steps = defaultdict(int)
-        self._cookbook = cookbook_template.COOKBOOK_TEMPLATE
+        # self._sleeps = defaultdict(SleepCycle)
+        # self._steps = defaultdict(int)
+        # Cookbook Will hold the initilized Task for the client.
+        self._cookbook = []
 
     def set_clients(self, clients):
         self._clients = clients
+        if len(clients) > len(_COOKBOOK):
+            print(
+                f"Too many clients for the number of recipies given. Clients: {len(clients)} Recipies: {len(_COOKBOOK)}")
+            return
+
+        # Init each task with the client.
+        for i in range(len(clients)):
+            client = clients[i]
+            meal = _COOKBOOK[i]
+            initilized_tasks = []
+            for recipie_data_row in meal.tasks:
+                # recipie_data_row = meal
+                recipe = recipie_data_row[0]
+                r = None
+                if len(recipie_data_row) > 1:
+                    recipe_data = recipie_data_row[1]
+                    r = recipe(client, *recipe_data)
+                else:
+                    r = recipe(client)
+                initilized_tasks.append(r)
+
+            meal.tasks = initilized_tasks
+            self._cookbook.append(meal)
+
         return True
 
     def start_bot(self, queue):
@@ -100,10 +129,9 @@ class BotLoop:
 
     def _run(self):
         user_input = ''
-        is_running = True
         img_taken = False  # Testing purposes
 
-        print("starting to bot!")
+        print(f"starting to bot!  Num clients {len(self._clients)}")
         if not self.DEBUG:
             self._login()
 
@@ -111,40 +139,22 @@ class BotLoop:
             if not self._q.empty():
                 user_input = self._q.get().decode("UTF-8")
 
-            for i, client in enumerate(self._clients):
-                if i in self._stopped_clients:
-                    continue
+            for task in self._cookbook:
+                task.run()
 
-                self.cook_from_book(client, i, user_input)
-                # res = Search.search_intf_image_to_num(
-                #     client, Spaces.INTF_RUN)
-                # print(f"Hp: {res}")
+            # # Test indiviual snippets
+            # for i, client in enumerate(self._clients):
+            #     if i in self._stopped_clients:
+            #         continue
 
-                # space = Spaces.INV
-                # for item in [Items.GOLD_BAR, Items.DIAMOND, Items.BRACELET_DIAMOND]:
-                #     print(item)
-                #     Search.click(Search.search_space_item(
-                #         client, space, item, confidence=item.value['conf']))
+            #     sleep(1)
 
-                # Search.click(Search.click_interface(
-                #     client, Spaces.SKILL_ATT))
+            #     if not img_taken:
 
-                # Search.click(Search.search_space_color(
-                #     client, Spaces.PLAYER_CENTER_SM, Colors.NPC_PURPLE))
+            #         #           End Client Loop          #
+            #         ######################################
+            #         pass
 
-                # print(Search.chat_head_showing(client, left=True))
-
-                sleep(1)
-                # self.cook_from_book(client, i, user_input)
-                if not img_taken:
-
-                    #           End Client Loop          #
-                    ######################################
-                    pass
-            img_taken = True
+            # img_taken = True
             user_input = ''
             sleep(.5)
-
-
-if __name__ == "__main__":
-    pass

@@ -1,68 +1,47 @@
 from random import gauss
 from time import sleep
 from utils import rr
-import pyautogui as py
+
+from Colors import Colors
+from Items import Items
+from Map import Map
+from PyKey import PyKey
+from Search import Search
+from Spaces import Spaces
 
 
-def print1(client):
-    print(f"Step1: {client.get_pid()}")
+def walk_to_bank(client):
+    ct = rr(0, 100)
+    if ct < 50:
+        Search.click(Search.click_interface_from_raw_coords(
+            client, [583, 92, 600, 105]))
+    else:
+        Search.click(Search.search_space_color(
+            client, Spaces.WEST, Colors.Blue))
 
 
-def print2(client):
-    print(f"Step2: {client.get_pid()}")
+def click_on_bank(client):
+    Search.click(Search.search_space_color(client, Spaces.SOUTH, Colors.Red))
 
 
-def print3(client):
-    print(f"Step3: {client.get_pid()}")
+def walk_to_bank_sleep(is_running):
+    return max(9, gauss(9.6, 0.59123))
 
 
-def print4(client):
-    print(f"Step4: {client.get_pid()}")
-
-
-def print5(client):
-    print(f"Step5: {client.get_pid()}")
-
-
-def sleep1(is_running):
-    print("Sleep1")
-    return max(10, gauss(10.6, 0.59123)) if not is_running else max(4.75, gauss(4.8, 0.39123))
-
-
-def sleep2(is_running):
-    print("Sleep2")
-    return max(.250, gauss(.3, .29123))
-
-
-def sleep3(is_running):
-    print("Sleep3")
-    return max(10, gauss(10.4002, .59123)) if not is_running else max(4.75, gauss(4.8, 0.39123))
-
-
-def sleep4(is_running):
-    print("Sleep4")
-    return max(24.5, gauss(25.4002, 2.29123))
-
-
-def sleep5(is_running):
-    print("Sleep5")
-    return max(24.5, gauss(25.4002, 2.29123))
+def click_on_bank_sleep(is_running):
+    return max(3, gauss(3.6, 0.59123))
 
 
 RECIPIE = {
     'fns': [
-        print1,
-        print2,
-        print3,
-        print4,
-        print5,
+        walk_to_bank,
+        click_on_bank,
     ],
     # ----------------------------------------------------------------------------------------
     'sleeps': [
-        sleep1,
-        sleep2,
-        sleep3,
-        sleep4,
-        sleep5,
+
+        walk_to_bank_sleep,
+        click_on_bank_sleep,
+
     ]
 }
