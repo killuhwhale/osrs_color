@@ -127,7 +127,7 @@ class Search:
         return cls._random_bound(bounds)
 
     @classmethod
-    def search_space_multi_item(cls, client: OsrsClient, space: Spaces, items: List[Items], grayscale=False, confidence=0.69) -> (list):
+    def search_space_multi_item(cls, client: OsrsClient, space: Spaces, items: List[Items], grayscale=False, confidence=0.69) -> (List):
         '''
             Search a space for an multiple items, returns a list of their click points or None if the item is not found.
             e.g. [(x,y), None, (x1,y1)]

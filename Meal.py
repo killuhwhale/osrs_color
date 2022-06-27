@@ -1,4 +1,5 @@
 from Tasks import BaseTask as B
+from typing import List
 
 
 class Meal:
@@ -8,7 +9,7 @@ class Meal:
 
     '''
 
-    def __init__(self, tasks: list[B.BaseTask]):
+    def __init__(self, tasks: List[B.BaseTask]):
         self.tasks = tasks
         self.current_task = 0
 
