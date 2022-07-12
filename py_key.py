@@ -5,6 +5,7 @@ from utils import Constant
 class PyKey:
 
     keyboard = Controller()
+    ENTER = Key.enter
     SPACE = Key.space
     LEFT = Key.left
     RIGHT = Key.right

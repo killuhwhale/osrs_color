@@ -1,9 +1,9 @@
 import collections
 import cv2
 from cv2 import cvtColor
-from Search import Items
-from Spaces import Spaces
-from VerifySpace import VerifySpace
+from search import Items
+from spaces import Spaces
+from verify_space import VerifySpace
 import pytesseract
 import numpy as np
 import pyautogui

@@ -3,19 +3,15 @@ from PIL.Image import Image as PILImage
 import pyautogui
 
 from typing import Tuple, List
-from SPACES_DEFAULT import DEFAULT_SPACES
-from SPACES_ANDAYA import ANDAYA92_SPACES
-from SPACES_KAMS import KAMS_SPACES
+from spaces_default import DEFAULT_SPACES
+from spaces_andaya import ANDAYA92_SPACES
+from spaces_kam import KAMS_SPACES
 
 from config import WINDOW_TOP_MARGIN
-from OsrsClient import OsrsClient
+from osrs_client import OsrsClient
 
 
 class Spaces(ANDAYA92_SPACES, KAMS_SPACES, DEFAULT_SPACES):
-    # _ignore_ = 'member cls'
-    # cls = vars()
-    # for member in chain(list(KAMS_SPACES), list(ANDAYA92_SPACES), list(DEFAULT_SPACES)):
-    #     cls[member.name] = member.value
 
     ''' Skill Spaces
         15x12
@@ -28,17 +24,6 @@ class Spaces(ANDAYA92_SPACES, KAMS_SPACES, DEFAULT_SPACES):
 
         Item Image for Search 
         40x40
-
-
-    get_space
-    get_bounds
-    get_bounds_from_raw
-
-
-
-    _translate_raw_bounds 
-    _crop_screen_pos
-    _screen_image
 
     '''
 

@@ -1,6 +1,6 @@
 from enum import Enum
 
-import Spaces
+import spaces
 
 
 class VerifySpace(Enum):
@@ -13,13 +13,13 @@ class VerifySpace(Enum):
     '''
     PATH_TO_SPACE_IMGS = "needles/spaces"
     BANK_DEPOSIT_WORN_ITEMS = {
-        "n": "BANK_DEPOSIT_WORN_ITEMS", "pos": Spaces.Spaces.BANK_DEPOSIT_WORN_ITEMS, "grayscale": False, "conf": 0.92}
+        "n": "BANK_DEPOSIT_WORN_ITEMS", "pos": spaces.Spaces.BANK_DEPOSIT_WORN_ITEMS, "grayscale": False, "conf": 0.92}
 
     GE_HISTORY = {
-        "n": "GE_HISTORY", "pos": Spaces.Spaces.GE_HISTORY, "grayscale": False, "conf": 0.92}
+        "n": "GE_HISTORY", "pos": spaces.Spaces.GE_HISTORY, "grayscale": False, "conf": 0.92}
 
     CONTINUE = {
-        "n": "CONTINUE", "pos": Spaces.Spaces.CONTINUE, "grayscale": False, "conf": 0.92}
+        "n": "CONTINUE", "pos": spaces.Spaces.CONTINUE, "grayscale": False, "conf": 0.92}
 
     @classmethod
     def get_image_path(cls, v_space,):

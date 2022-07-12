@@ -1,8 +1,8 @@
-from Spaces import Spaces
+from spaces import Spaces
 from recipies import EdgeFurnace, GoToGE
-import Items
-import Spaces
-import Meal
+import items
+import spaces
+import meal
 
 ''' Define a list of recipies
 
@@ -28,7 +28,7 @@ recipie_tasks = [
 
 
 COOKBOOK = [
-    Meal.Meal(recipie_tasks)
+    meal.Meal(recipie_tasks)
     # give some static data
     # r_make_cbs.RECIPIE,   # Client 1 recipie
     # r_tut_island.RECIPIE  # Client 2 recipie

@@ -5,6 +5,10 @@ PORT = 65432  # Port to listen on (non-privileged ports are > 1023)
 
 
 class OsrsInput:
+    ''' Listens for user input over a socket.
+
+    '''
+
     def __init__(self):
         self._q = None
 

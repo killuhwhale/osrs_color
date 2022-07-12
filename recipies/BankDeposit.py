@@ -1,15 +1,15 @@
 from random import gauss, shuffle
 from time import sleep
-from Tasks import RecipieTask as R
-from VerifySpace import VerifySpace
+from tasks import RecipieTask as R
+from verify_space import VerifySpace
 from utils import rr
 
-from Colors import Colors
-from Items import Items
-from Map import Map
-from PyKey import PyKey
-from Search import Search
-from Spaces import Spaces
+from colors import Colors
+from items import Items
+from map import Map
+from py_key import PyKey
+from search import Search
+from spaces import Spaces
 
 
 class BankDeposit(R.RecipieTask):

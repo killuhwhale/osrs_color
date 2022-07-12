@@ -1,7 +1,7 @@
 from random import gauss
 from time import sleep
-from Search import Search
-from Spaces import Spaces
+from search import Search
+from spaces import Spaces
 from utils import r_mouse_duration, rr
 import pyautogui
 

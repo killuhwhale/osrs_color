@@ -3,18 +3,17 @@
 from math import sqrt
 from random import gauss
 import cv2
-from cv2 import sort
 import numpy as np
 from PIL import Image
 import pyautogui
 from time import sleep
-from Colors import Colors
-from Items import Items
+from colors import Colors
+from items import Items
 from typing import Tuple, List
 
-from OsrsClient import OsrsClient
-from Spaces import Spaces
-from VerifySpace import VerifySpace
+from osrs_client import OsrsClient
+from spaces import Spaces
+from verify_space import VerifySpace
 from utils import rr
 
 
@@ -64,17 +63,6 @@ class Search:
 
     HORIZONTAL_RUN_IMG_PATH = "assets/horiImgs/hori_run_mask.png"
     EMPTY_CHAT_HEAD_PATH = "assets/chat_heads/chat_head_empty.png"
-
-    ''' I want to search for things.
-        Search means we are looking at an area and searching within it.
-        I can search by item.png, color
-
-        I want to check Certain Lvls w/ OCR
-
-
-        I want to click on predefined Interfaces.
-
-    '''
 
     @classmethod
     def search_intf_image_to_num(cls, client, space) -> int:

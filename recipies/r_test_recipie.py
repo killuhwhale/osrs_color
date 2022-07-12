@@ -2,12 +2,12 @@ from random import gauss
 from time import sleep
 from utils import rr
 
-from Colors import Colors
-from Items import Items
-from Map import Map
-from PyKey import PyKey
-from Search import Search
-from Spaces import Spaces
+from colors import Colors
+from items import Items
+from map import Map
+from py_key import PyKey
+from search import Search
+from spaces import Spaces
 
 
 def walk_to_bank(client):

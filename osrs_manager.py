@@ -1,4 +1,5 @@
 from multiprocessing import Queue, Process
+import argparse
 import pyautogui
 import re
 import signal
@@ -7,20 +8,23 @@ import threading
 import time
 
 from bot_loop import BotLoop
-from OsrsClient import OsrsClient
+from osrs_client import OsrsClient
 from osrs_input import OsrsInput
 from utils import run_cmd, run_script
-from config import PLATFORM, SCREEN_TOP_MARGIN, WINDOW_TOP_MARGIN, OS_LINUX, OS_WIN, OS_MAC
+from config import PLATFORM, SCREEN_TOP_MARGIN, OS_WIN, OS_MAC
 
 DEBUG = True
-SOCKS_HOST = ''
-SOCKS_PORT = 1080
+SOCKS_HOST = '127.0.0.1'
+SOCKS_PORT = 13377
 
 
 class OsrsManager:
-    '''
-        Creates 5 instances of Runelite and finds all pids.
-        For each PID, create an instance of OSRS() 
+    ''' The bot manager which manages the top level of the system.
+
+        Creates num_clients instances of Runelite and finds all pids.
+        For each PID, create an instance of OSRS() and place/ resize windows.
+        Begin Main Loop Process and Input thread.
+        Allow external commands(utf-8 text) to be sent to clients.
 
     '''
     CLIENT_WIDTH = 765
@@ -28,14 +32,6 @@ class OsrsManager:
 
     SCREEN_WIDTH = 1920
     SCREEN_HEIGHT = 1080 - SCREEN_TOP_MARGIN
-
-    # POS = [(0, 0 + SCREEN_TOP_MARGIN),
-    #        (SCREEN_WIDTH//3, 0 + SCREEN_TOP_MARGIN),
-    #        (2*(SCREEN_WIDTH//3), 0 + SCREEN_TOP_MARGIN),
-
-    #        (0, (SCREEN_HEIGHT//2) + SCREEN_TOP_MARGIN),
-    #        (SCREEN_WIDTH//3, (SCREEN_HEIGHT//2) + SCREEN_TOP_MARGIN)
-    #        ]
 
     POS = [
         (0, 0 + SCREEN_TOP_MARGIN),
@@ -47,8 +43,9 @@ class OsrsManager:
         (2*CLIENT_WIDTH, CLIENT_HEIGHT + SCREEN_TOP_MARGIN),
     ]
 
-    def __init__(self, num_clients):
+    def __init__(self, num_clients, accounts):
         self._num_clients = num_clients
+        self._accounts = accounts
         self._os_name = PLATFORM
         self.pids = []
         self.clients = []
@@ -58,8 +55,8 @@ class OsrsManager:
         # Process queue
         self._q = Queue()
 
-        self._botLoop = BotLoop(DEBUG)
-        self._input = OsrsInput()
+        self._botLoop = BotLoop(DEBUG)  # Executes tasks for each client.
+        self._input = OsrsInput()  # Thread to listen for user input
 
         self.create_clients()
         print(
@@ -70,10 +67,10 @@ class OsrsManager:
         # Launch Processes
         if not DEBUG:
             for i in range(self._num_clients):
-                cmd = f'java -jar ./RuneLite.jar'
+                cmd = f'java -DsocksProxyHost={SOCKS_HOST} -DsocksProxyPort={SOCKS_PORT} -jar ./RuneLite.jar'
                 ''' 
-                cmd = f'java -DsocksProxyHost={SOCKS_HOST} -DsocksProxyPort={SOCKS_PORT} -jar runelite.jar'
-
+                cmd = f'java -jar ./RuneLite.jar'
+        
                 Plugin:
                     Search response in custom ammo plugin target=".your-ip"
                     /Users/chrisandaya/IdeaProjects/runelite/runelite-client/target/client-1.8.25-SNAPSHOT-shaded.jar
@@ -128,7 +125,8 @@ class OsrsManager:
             # If Linux
 
             # Create client
-            self.clients.append(OsrsClient(pid, dims))
+
+            self.clients.append(OsrsClient(pid, dims, self._accounts[i]))
 
     def _find_pids(self):
         """ Finds PID of runelite.
@@ -214,8 +212,8 @@ class OsrsManager:
         assert all(
             values), f"Unable to find pos or geo of window: {win_id}"
         return values
-    # Linux
 
+    # Linux
     def _get_win_IDs(self, pid):
         """ Gets window ID of Runelite.
 
@@ -255,17 +253,6 @@ class OsrsManager:
             window.moveTo(pos[0], pos[1])
             print(f'giving window {i} pos:{pos}')
 
-    def start_it(self):
-        # main_loop = threading.Thread(target=self.run, args=(99,))
-        self._main_loop = Process(target=self._run, args=(self._q,))
-        self._main_loop.start()
-        while(True):
-            user_input = input("Enter a command: ")
-            self._q.put(user_input)
-
-    def stop_it(self):
-        self._main_loop.terminate()
-
     def begin(self):
         # Start process
         self._main_loop = Process(
@@ -298,5 +285,25 @@ class OsrsManager:
 
 
 if __name__ == "__main__":
-    manager = OsrsManager(1)
-    manager.begin()
+
+    # Initialize parser
+    msg = """
+        Test
+    """
+    parser = argparse.ArgumentParser(description=msg)
+    parser.add_argument("-n", "--clients", help="Number of Clients")
+    parser.add_argument("-a", "--accounts", help="Accounts")
+    args = parser.parse_args()
+
+    ACCOUNTS = [
+        ['thisiscrazy@really.net', 'qpwoei1337'],
+        ['thisiscrazy1@really.net', 'qpwoei1337'],
+        ['thisiscrazy2@really.net', 'qpwoei1337'],
+        ['thisiscrazy3@really.net', 'qpwoei1337'],
+    ]
+
+    num_clients = args.clients or 1
+    accounts = args.accounts or ACCOUNTS
+    print(num_clients, accounts)
+    # manager = OsrsManager(num_clients, accounts)
+    # manager.begin()

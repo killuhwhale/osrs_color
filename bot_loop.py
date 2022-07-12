@@ -1,22 +1,5 @@
-from collections import defaultdict
-from random import gauss
-from PIL import Image
-from time import sleep, time
-from Colors import Colors
-from Spaces import Spaces
-from Search import Search
-from Items import Items
+from time import sleep
 from cookbooks import cookbook_template, smithing_cookbook
-from PyKey import PyKey
-
-from recipies.EdgeFurnace import EdgeFurnace
-
-ACCOUNTS = [
-    ['thisiscrazy@really.net', 'qpwoei1337'],
-    ['thisiscrazy1@really.net', 'qpwoei1337'],
-    ['thisiscrazy2@really.net', 'qpwoei1337'],
-    ['thisiscrazy3@really.net', 'qpwoei1337'],
-]
 
 ''' The main bot loop.
 
@@ -34,19 +17,8 @@ The loop will execute a step and sleep from a recipie for each client.
 '''
 
 
-# class SleepCycle:
-#     def __init__(self):
-#         self.start = 0.0
-#         self.dur = 0.0
-
-#     def set(self, start, dur):
-#         self.start = start
-#         self.dur = dur
-
-#     def is_ready(self):
-#         return time() - self.start >= self.dur
-
 _COOKBOOK = smithing_cookbook.COOKBOOK
+LOOP_SLEEP = 0.5
 
 
 class BotLoop:
@@ -56,9 +28,6 @@ class BotLoop:
         self._q = None
         self.DEBUG = DEBUG
         self._stopped_clients = []
-        # each client will update this with how long they need to sleep for
-        # self._sleeps = defaultdict(SleepCycle)
-        # self._steps = defaultdict(int)
         # Cookbook Will hold the initilized Task for the client.
         self._cookbook = []
 
@@ -94,42 +63,15 @@ class BotLoop:
         self._q = queue
         self._run()
 
-    def _login(self):
+    def _login(self, client):
         print("Logging in!")
         for i, client in enumerate(self._clients):
-            creds = ACCOUNTS[i]
-            print(f"Loggin in with {creds}")
-            client.login(creds[0], creds[1])
+            client.login()
 
         print("Logged in!")
 
-    def cook_from_book(self, client, i, user_input=""):
-        recipie = self._cookbook[i]  # Get recipie from cookbook for client
-        step = self._steps[i]
-
-        # End of recipie reached
-        if step == len(recipie['fns']):
-            self._steps[i] = 0
-            step = 0
-
-            if user_input == "stop":
-                self._stopped_clients.append(i)
-                return
-
-        # print(f'Checking if {i} isReady')
-        if self._sleeps[i].is_ready():
-            print(f"\nRunning step: {step}\n")
-            recipie['fns'][step](client)  # Do the step for the client
-            self._steps[i] += 1  # Update the clients current step.
-            # Update the sleep time, call lambda function to generate random sleep val
-            is_running = True
-            self._sleeps[i].set(time(), recipie['sleeps'][step](is_running))
-        else:
-            print(f"\Sleeping on step: {step}\n")
-
     def _run(self):
         user_input = ''
-        img_taken = False  # Testing purposes
 
         print(f"starting to bot!  Num clients {len(self._clients)}")
         if not self.DEBUG:
@@ -137,24 +79,11 @@ class BotLoop:
 
         while True and len(self._stopped_clients) < len(self._clients):
             if not self._q.empty():
+                # Do something on user_input, possibly pass to each task
                 user_input = self._q.get().decode("UTF-8")
 
             for task in self._cookbook:
                 task.run()
 
-            # # Test indiviual snippets
-            # for i, client in enumerate(self._clients):
-            #     if i in self._stopped_clients:
-            #         continue
-
-            #     sleep(1)
-
-            #     if not img_taken:
-
-            #         #           End Client Loop          #
-            #         ######################################
-            #         pass
-
-            # img_taken = True
             user_input = ''
-            sleep(.5)
+            sleep(LOOP_SLEEP)
