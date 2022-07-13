@@ -296,10 +296,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     ACCOUNTS = [
-        ['thisiscrazy@really.net', 'qpwoei1337'],
-        ['thisiscrazy1@really.net', 'qpwoei1337'],
-        ['thisiscrazy2@really.net', 'qpwoei1337'],
-        ['thisiscrazy3@really.net', 'qpwoei1337'],
+        ['acct_name', 'password'],
+
     ]
 
     num_clients = args.clients or 1
