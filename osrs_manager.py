@@ -6,7 +6,9 @@ import signal
 import sys
 import threading
 import time
-
+import spaces
+import map
+import search
 from bot_loop import BotLoop
 from osrs_client import OsrsClient
 from osrs_input import OsrsInput
@@ -303,5 +305,5 @@ if __name__ == "__main__":
     num_clients = args.clients or 1
     accounts = args.accounts or ACCOUNTS
     print(num_clients, accounts)
-    # manager = OsrsManager(num_clients, accounts)
-    # manager.begin()
+    manager = OsrsManager(num_clients, accounts)
+    manager.begin()

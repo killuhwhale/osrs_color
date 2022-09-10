@@ -11,6 +11,7 @@ from colors import Colors
 from items import Items
 from typing import Tuple, List
 
+
 from osrs_client import OsrsClient
 from spaces import Spaces
 from verify_space import VerifySpace

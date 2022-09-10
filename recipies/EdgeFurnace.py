@@ -179,7 +179,7 @@ class EdgeFurnace(R.RecipieTask):
         '''
             Check that we have items in the bank, if we dont, exit.
         '''
-        return None
+        return True
 
     def _v_walk_to_furnace(self, client):
         # Code to check for red

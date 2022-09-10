@@ -1,3 +1,38 @@
+This is a multibox color bot. Which means to say, this bot is capable of running a color detection based script
+on multiple clients at once on a single machine/cpu.
+
+![osrs color sample](sample.gif)
+
+
+The user can easily write steps to execute such as:
+
+    def click_gilinor_guide(client, space=Spaces.PLAYER_CENTER_LG, chat_head_left=True):
+        ''' Starting from somewhere in 1st house, lookfor 'FFFF0000' and click him 
+
+        NPC Indicators
+        '''
+        if Search.chat_head_showing(client):
+            return
+
+        pt = Search.search_space_color(
+            client, space, Colors.NPC_PURPLE)
+        Search.click(pt)
+
+        sleep(3)
+
+        while not Search.chat_head_showing(client, left=chat_head_left):
+            pt = Search.search_space_color(
+                client, space, Colors.NPC_PURPLE)
+            Search.click(pt)
+            sleep(gauss(3, 0.5))
+
+
+This will click on an NPC colored purple. If a misclick happens it will contiue to click on the NPC while the chat head is not showing.
+
+Below is an explanation of how to write a script for this bot.
+
+
+
 ## VENV/ Project setup
 setup_project.py
 

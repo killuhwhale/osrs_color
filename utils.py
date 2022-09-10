@@ -30,6 +30,8 @@ def run_cmd(cmd, as_list=False):
 
 
 def rr(a, b):
+    if a == b:
+        b += 1
     return randrange(min(a, b), max(a, b))
 
 

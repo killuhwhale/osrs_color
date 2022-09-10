@@ -1,7 +1,7 @@
 from spaces import Spaces
 from recipies import EdgeFurnace, GoToGE
 import items
-import spaces
+from spaces import Spaces
 import meal
 
 ''' Define a list of recipies
@@ -21,9 +21,15 @@ A list of tuples, with a tuple == (TaskClass, list(arguments for the class exclu
 '''
 
 recipie_tasks = [
-    # (EdgeFurnace.EdgeFurnace, [str(Items.Items.BRONZE_BAR), [
-    #     Items.Items.TIN_ORE, Items.Items.COPPER_ORE], Spaces.Spaces.SMELT_BAR_BRONZE, 49]),
-    (GoToGE.GoToGE, ),
+    (
+        EdgeFurnace.EdgeFurnace,
+        [
+            str(items.Items.BRONZE_BAR),
+            [items.Items.TIN_ORE, items.Items.COPPER_ORE],
+            Spaces.SMELT_BAR_BRONZE, 49
+        ]
+    ),
+    # (GoToGE.GoToGE, ),
 ]
 
 

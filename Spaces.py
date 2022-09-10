@@ -8,7 +8,7 @@ from spaces_andaya import ANDAYA92_SPACES
 from spaces_kam import KAMS_SPACES
 
 from config import WINDOW_TOP_MARGIN
-from osrs_client import OsrsClient
+import osrs_client
 
 
 class Spaces(ANDAYA92_SPACES, KAMS_SPACES, DEFAULT_SPACES):
@@ -33,14 +33,14 @@ class Spaces(ANDAYA92_SPACES, KAMS_SPACES, DEFAULT_SPACES):
     SPACES.update(DEFAULT_SPACES.SPACES)
 
     @classmethod
-    def get_space(cls, client: OsrsClient, space) -> Tuple[PILImage, int, int]:
+    def get_space(cls, client: osrs_client.OsrsClient, space) -> Tuple[PILImage, int, int]:
         ''' Returns Image and offset of image (x, y), relative to client.
             img, x_offset, y_offset
         '''
         return cls._crop_screen_pos(client, cls.SPACES[space])
 
     @classmethod
-    def get_bounds(cls, client: OsrsClient, space) -> Tuple[int, int, int, int]:
+    def get_bounds(cls, client: osrs_client.OsrsClient, space) -> Tuple[int, int, int, int]:
         ''' Get bounds for a certain space. Adjusted to Client and OS window margins.
             BOUNDS == x,y,w,h
             COORDS == x,y,x1,y1
@@ -49,7 +49,7 @@ class Spaces(ANDAYA92_SPACES, KAMS_SPACES, DEFAULT_SPACES):
         return (x, y, x1-x, y1-y)
 
     @classmethod
-    def get_bounds_from_raw_coords(cls, client: OsrsClient, raw_space) -> Tuple[int, int, int, int]:
+    def get_bounds_from_raw_coords(cls, client: osrs_client.OsrsClient, raw_space) -> Tuple[int, int, int, int]:
         ''' Get bounds for a certain space given raw coords, [x,y,x1,y1]
             Adjusted to Client and OS window margins.
             BOUNDS == x,y,w,h
@@ -70,7 +70,7 @@ class Spaces(ANDAYA92_SPACES, KAMS_SPACES, DEFAULT_SPACES):
         return myScreenshot
 
     @classmethod
-    def _crop_screen_pos(cls, client: OsrsClient, raw_coords: List, name=None) -> Tuple[PILImage, int, int]:
+    def _crop_screen_pos(cls, client: osrs_client.OsrsClient, raw_coords: List, name=None) -> Tuple[PILImage, int, int]:
         ''' Given the Relative Top Left(x,y) and BottomRight(x1, y1) corners, return the cropped image w/ its TL corner offset.
 
             Returns [img, x_offset, y_offset]
@@ -83,7 +83,7 @@ class Spaces(ANDAYA92_SPACES, KAMS_SPACES, DEFAULT_SPACES):
         )
 
     @classmethod
-    def _translate_raw_coords(cls, client: OsrsClient, raw_coords: List) -> Tuple[int, int, int, int]:
+    def _translate_raw_coords(cls, client: osrs_client.OsrsClient, raw_coords: List) -> Tuple[int, int, int, int]:
         dims = client.dims
         x, y = dims[0], dims[1]
         x_offset, y_offset, x1_offset, y1_offset = raw_coords
